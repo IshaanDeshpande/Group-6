@@ -1,0 +1,36 @@
+# Core backend framework
+Django>=5.0,<6.0
+
+# Optional API framework for future API endpoints
+djangorestframework>=3.15,<4.0
+
+# PostgreSQL database connection for Supabase
+psycopg2-binary>=2.9,<3.0
+
+# Environment variable management
+python-dotenv>=1.0,<2.0
+django-environ>=0.11,<1.0
+
+# Static file handling for deployment
+whitenoise>=6.6,<7.0
+
+# Production web server
+gunicorn>=22.0,<23.0
+
+# Image/file upload support
+Pillow>=10.0,<11.0
+
+# CORS support, useful if the frontend/API becomes separated later
+django-cors-headers>=4.3,<5.0
+
+# Forms and UI helper for Django templates
+django-crispy-forms>=2.1,<3.0
+crispy-tailwind>=1.0,<2.0
+
+# Testing
+pytest>=8.0,<9.0
+pytest-django>=4.8,<5.0
+
+# Code formatting and linting
+black>=24.0,<25.0
+ruff>=0.4,<1.0

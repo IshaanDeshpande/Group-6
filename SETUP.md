@@ -235,9 +235,9 @@ Configure Git with your name and email:
 
 ```
 
-git config --global [user.name](http://user.name) "Your Name"
+git config --global user.name "Your Name"
 
-git config --global [user.email](http://user.email) "[you@example.com](mailto:you@example.com)"
+git config --global user.email "you@example.com"
 
 ```
 
@@ -561,6 +561,16 @@ python -m pip install --upgrade pip
 
 Install the core backend packages:
 
+Option 1: install everything from the `requirements.txt` file
+
+```
+
+pip install -r requirements.txt
+
+```
+
+Option 2: install through command line individually
+
 ```
 
 pip install django djangorestframework psycopg2-binary python-dotenv django-environ gunicorn whitenoise
@@ -636,7 +646,7 @@ Create Tailwind config files if they do not exist yet:
 
 ```
 
-npx tailwindcss init -p
+npm install tailwindcss
 
 ```
 
@@ -752,7 +762,7 @@ source venv/bin/activate
 
 ```
 
-[venvScriptsActivate.ps](http://venvScriptsActivate.ps)1
+venvScriptsActivate.ps
 
 ```
 
@@ -764,9 +774,9 @@ Migrations create or update database tables.
 
 ```
 
-python [manage.py](http://manage.py) makemigrations
+python manage.py makemigrations
 
-python [manage.py](http://manage.py) migrate
+python manage.py migrate
 
 ```
 
@@ -778,7 +788,7 @@ This creates a local admin account for the Django admin dashboard.
 
 ```
 
-python [manage.py](http://manage.py) createsuperuser
+python manage.py createsuperuser
 
 ```
 
@@ -788,7 +798,7 @@ python [manage.py](http://manage.py) createsuperuser
 
 ```
 
-python [manage.py](http://manage.py) runserver
+python manage.py runserver
 
 ```
 
@@ -1371,7 +1381,7 @@ Then reopen PowerShell and try:
 
 ```
 
-[venvScriptsActivate.ps](http://venvScriptsActivate.ps)1
+venvScriptsActivate.ps
 
 ```
 
@@ -1519,4 +1529,4 @@ Good habits:
 - Ask for review before merging.
 - Never commit secrets.
 - Test locally before opening a PR.
-```
+

@@ -1007,6 +1007,8 @@ This project is part of the **Computing 4 Good 2026** program at the **Colorado 
 
 ### Development Team
 
+> TODO: complete
+
 | Name | Role | GitHub | Email |
 |---|---|---|---|
 | TODO: Developer 1 | TODO | TODO | TODO |
@@ -1025,7 +1027,7 @@ This project is part of the **Computing 4 Good 2026** program at the **Colorado 
 
 ## License
 
-TODO: Add project license.
+> TODO: Add project license.
 
 Recommended options:
 
