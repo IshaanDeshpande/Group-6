@@ -15,7 +15,7 @@ This project is currently in the development phase.
 
 ## Table of Contents
 
-- [ResourceConnect](#project-name)
+- [ResourceConnect](#ResourceConnect)
   - [Overview](#overview)
   - [Tech Stack](#tech-stack)
   - [Why This Stack](#why-this-stack)
@@ -997,32 +997,26 @@ This project is part of the **Computing 4 Good 2026** program at the **Colorado 
 
 ### Development Team
 
-> TODO: complete
+
 
 | Name | Role | GitHub | Email |
 |---|---|---|---|
-| TODO: Developer 1 | TODO | TODO | TODO |
-| TODO: Developer 2 | TODO | TODO | TODO |
-| TODO: Developer 3 | TODO | TODO | TODO |
-| TODO: Developer 4 | TODO | TODO | TODO |
-| TODO: Developer 5 | TODO | TODO | TODO |
+| Vyomesh | project developer | Vyo-Par | vyomeshparasa2@gmail.com |
+| Ishaan | project developer | IshaanDeshpande | ishaans.desh@gmail.com |
+| Jackson | project developer | JacksonP882 | pope.jackso09@gmail.com |
+| Vihaan | project developer | VihaanRav | ravishankarvihaan@outlook.com |
 
 ### Mentor / Advisor
 
 | Name | Role | GitHub | Email |
 |---|---|---|---|
-| TODO | TODO | TODO | TODO |
+| Mimi | mentor/template provider | mimi-rai | 22sumnima.rai@gmail.com |
 
 ---
 
 ## License
 
-> TODO: Add project license.
 
-Recommended options:
-
-- MIT License for open-source projects
-- Apache 2.0 License for open-source projects with patent protections
-- Private/no license if the repository should not be reused publicly yet
+MIT License for open-source projects
 
 ---
