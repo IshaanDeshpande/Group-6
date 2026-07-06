@@ -1,7 +1,7 @@
 
 
 # ResourceConnect
-
+Current webiste html file link: file:///c%3A/Users/pkotz/Group-6/index.html
 
 A web application developed as part of the **Computing 4 Good 2026** program at the **Colorado School of Mines**.
 
