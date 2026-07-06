@@ -3,10 +3,7 @@ export default {
   content: [
     './templates/**/*.html',
     './apps/**/*.html',
-<<<<<<< HEAD
     './apps/**/*.py',
-=======
->>>>>>> ff21b459de8db17bb1bb0512dad38e2e6cb193ca
     './static/**/*.js',
   ],
   theme: {

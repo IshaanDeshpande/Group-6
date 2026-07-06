@@ -12,10 +12,29 @@
   />
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/output.css' %}" />
-<<<<<<< HEAD
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  {% block content %}{% endblock %}
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}ResourceConnect{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Oswald:wght@400&display=swap"
+    rel="stylesheet"
+  />
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/output.css' %}" />
   <script defer src="{% static 'js/alpine.js' %}"></script>
-=======
->>>>>>> ff21b459de8db17bb1bb0512dad38e2e6cb193ca
   {% block extra_css %}{% endblock %}
 </head>
 <body>

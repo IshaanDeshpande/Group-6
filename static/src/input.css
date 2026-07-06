@@ -40,7 +40,6 @@
     @apply mt-8 md:mt-12 lg:mt-16 border-none rounded-lg bg-button-bg text-black font-heading font-semibold text-lg md:text-2xl lg:text-3xl px-8 md:px-12 lg:px-16 py-4 md:py-6 lg:py-8 cursor-pointer transition-all hover:brightness-95;
   }
 
-<<<<<<< HEAD
   .auth-page {
     @apply flex flex-col items-center px-6 py-12 md:py-16;
   }
@@ -73,15 +72,13 @@
     @apply text-red-600 font-subtitle text-sm md:text-base;
   }
 
-=======
->>>>>>> ff21b459de8db17bb1bb0512dad38e2e6cb193ca
   @media (max-width: 640px) {
     .nav-container {
       @apply flex-col items-start;
     }
 
     .nav-login {
-      @apply ml-0;
+      margin-left: 0;
     }
   }
 }
