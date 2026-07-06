@@ -4,7 +4,6 @@
   "description": "> TODO: Add final project name.",
   "main": "index.js",
   "scripts": {
-    "dev": "python manage.py runserver",
     "build:css": "tailwindcss -i ./static/src/input.css -o ./static/css/output.css",
     "watch:css": "tailwindcss -i ./static/src/input.css -o ./static/css/output.css --watch",
     "test": "echo \"Error: no test specified\" && exit 1"

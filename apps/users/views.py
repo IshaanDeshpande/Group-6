@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
@@ -41,11 +39,3 @@ def login_view(request):
     else:
         form = LoginForm()
     return render(request, 'users/login.html', {'form': form})
-=======
-from django.shortcuts import render
-from rest_framework import viewsets
->>>>>>> ff21b459de8db17bb1bb0512dad38e2e6cb193ca
-=======
-from django.shortcuts import render
-from rest_framework import viewsets
->>>>>>> ff21b459de8db17bb1bb0512dad38e2e6cb193ca
