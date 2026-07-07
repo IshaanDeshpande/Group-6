@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
     './templates/**/*.html',
     './apps/**/*.html',
@@ -17,9 +17,5 @@ export default {
         'subtitle': ['Oswald', '-apple-system', 'Roboto', 'Helvetica', 'sans-serif'],
       },
     },
-  },
-  plugins: [require('daisyui')],
-  daisyui: {
-    themes: ['light'],
   },
 }

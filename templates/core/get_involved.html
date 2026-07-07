@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}ResourceConnect - Get Involved{% endblock %}
+
+{% block content %}
+{% include 'partials/navbar.html' %}
+
+<div class="get-involved-container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <button class="sidebar-toggle">«</button>
+    <nav class="sidebar-nav">
+      <a href="#" class="sidebar-item active">Main</a>
+      <a href="#" class="sidebar-item">Learn</a>
+      <a href="#" class="sidebar-item">Quiz<span class="sidebar-item-description">Find what involvement suits you!</span></a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="get-involved-content">
+    <h1 class="get-involved-title">Get Involved</h1>
+    <p class="get-involved-subtitle">Search for involvement opportunities</p>
+    
+    <!-- Search Section -->
+    <div class="search-section">
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="Search for involvement opportunities"
+        aria-label="Search for involvement opportunities"
+      />
+      <button class="search-button" aria-label="Search">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2"/>
+          <path d="M12 12L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Results Section -->
+    <div class="results-section">
+      <h2 class="results-heading">RESULTS</h2>
+      <div class="results-container"></div>
+    </div>
+  </main>
+</div>
+{% endblock %}

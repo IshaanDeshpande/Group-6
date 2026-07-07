@@ -1,8 +1,14 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@config "../../tailwind.config.js";
+@plugin "daisyui" {
+  themes: light;
+}
 
 @layer components {
+  .page-divider {
+    @apply w-full border-0 border-t border-black m-0;
+  }
+
   .navbar {
     @apply bg-nav-bg;
   }
@@ -33,7 +39,7 @@
   }
 
   .hero-subtitle {
-    @apply max-w-4xl m-6 md:m-8 lg:m-12 text-0 text-black font-subtitle font-normal text-base md:text-lg lg:text-2xl leading-normal;
+    @apply max-w-4xl m-6 md:m-8 lg:m-12 text-black font-subtitle font-normal text-base md:text-lg lg:text-2xl leading-normal;
   }
 
   .cta-button {
@@ -70,6 +76,78 @@
 
   .form-error {
     @apply text-red-600 font-subtitle text-sm md:text-base;
+  }
+
+  .get-involved-container {
+    @apply flex flex-col sm:flex-row min-h-[calc(100vh-5rem)];
+  }
+
+  .sidebar {
+    @apply relative w-full sm:w-48 bg-white border-b-2 sm:border-b-0 sm:border-r-2 border-nav-bg py-4 sm:py-8;
+  }
+
+  .sidebar-toggle {
+    @apply absolute top-6 right-4 bg-transparent border-none text-nav-bg text-2xl font-bold cursor-pointer;
+  }
+
+  .sidebar-nav {
+    @apply flex flex-row sm:flex-col gap-4 sm:gap-8 px-4 sm:px-6 py-0 sm:py-4;
+  }
+
+  .sidebar-item {
+    @apply flex flex-col gap-2 text-black no-underline text-lg font-semibold cursor-pointer;
+  }
+
+  .sidebar-item.active {
+    @apply text-nav-bg;
+  }
+
+  .sidebar-item-description {
+    @apply text-sm font-normal text-gray-600;
+  }
+
+  .get-involved-content {
+    @apply flex-1 max-w-4xl mx-auto p-8 md:p-12;
+  }
+
+  .get-involved-title {
+    @apply m-0 mb-2 text-black font-heading font-bold text-3xl md:text-4xl lg:text-5xl;
+  }
+
+  .get-involved-subtitle {
+    @apply mt-2 mb-8 text-black font-subtitle text-lg md:text-2xl;
+  }
+
+  .search-section {
+    @apply relative mb-8;
+  }
+
+  .search-input {
+    @apply w-full border-4 border-nav-bg rounded-[1.75rem] font-subtitle text-lg py-4 pl-6 pr-20 outline-none;
+  }
+
+  .search-input::placeholder {
+    @apply text-gray-400;
+  }
+
+  .search-input:focus {
+    @apply border-nav-bg;
+  }
+
+  .search-button {
+    @apply absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-12 h-12 rounded-full bg-black text-white border-none cursor-pointer transition-all hover:brightness-125;
+  }
+
+  .results-section {
+    @apply flex flex-col gap-4;
+  }
+
+  .results-heading {
+    @apply m-0 text-lg font-bold tracking-wide text-black;
+  }
+
+  .results-container {
+    @apply min-h-40 border-4 border-nav-bg rounded-3xl p-8;
   }
 
   @media (max-width: 640px) {
