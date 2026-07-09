@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}ResourceConnect - Profile{% endblock %}
+
+{% block content %}
+<main class="profile-page">
+  <h1 class="profile-title">Welcome, {{ request.user.username }}.</h1>
+
+  <div class="profile-grid">
+    <section class="profile-card">
+      <h2 class="profile-card-title">Settings</h2>
+      <form method="post" class="profile-form">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <p class="form-error">{{ form.non_field_errors.0 }}</p>
+        {% endif %}
+        <div class="profile-field">
+          <label class="profile-field-label" for="{{ form.username.id_for_label }}">Username</label>
+          {{ form.username }}
+        </div>
+        <div class="profile-field">
+          <label class="profile-field-label" for="{{ form.email.id_for_label }}">Email</label>
+          {{ form.email }}
+        </div>
+        <div class="profile-field">
+          <label class="profile-field-label" for="{{ form.zip_code.id_for_label }}">Zip Code</label>
+          {{ form.zip_code }}
+        </div>
+        <div class="profile-field">
+          <label class="profile-field-label" for="{{ form.password.id_for_label }}">Password</label>
+          {{ form.password }}
+        </div>
+        <button
+          type="submit"
+          name="delete_account"
+          value="1"
+          class="delete-account-link"
+          onclick="return confirm('Delete your account? This cannot be undone.');"
+        >Delete account</button>
+        <button type="submit" class="cta-button self-start">Save Changes</button>
+      </form>
+    </section>
+
+    <section class="profile-card">
+      <h2 class="profile-card-title">Favorites</h2>
+      <p class="favorites-subtitle">Favorited sites and resources</p>
+      <div class="favorites-placeholder"></div>
+    </section>
+  </div>
+</main>
+{% endblock %}

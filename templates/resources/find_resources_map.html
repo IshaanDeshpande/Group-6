@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}ResourceConnect - Find Resources Map{% endblock %}
+
+{% block content %}
+<div class="sidebar-page">
+  {% include 'partials/sidebar_find_resources.html' %}
+
+  <main class="sidebar-page-content" x-data="{ category: null }">
+    <h1 class="sidebar-page-title">Find resources near you</h1>
+
+    <div class="resource-categories">
+      <button type="button" class="resource-category" :class="{ 'resource-category--selected': category === 'food' }" @click="category = 'food'">Food</button>
+      <button type="button" class="resource-category" :class="{ 'resource-category--selected': category === 'shelter' }" @click="category = 'shelter'">Shelter</button>
+      <button type="button" class="resource-category" :class="{ 'resource-category--selected': category === 'clothing' }" @click="category = 'clothing'">Clothing</button>
+      <button type="button" class="resource-category" :class="{ 'resource-category--selected': category === 'transportation' }" @click="category = 'transportation'">Transportation</button>
+      <button type="button" class="resource-category" :class="{ 'resource-category--selected': category === 'healthcare' }" @click="category = 'healthcare'">Healthcare</button>
+    </div>
+
+    <div class="resource-map">
+      <span class="resource-map-marker" style="left: 29%; top: 62%;"></span>
+    </div>
+  </main>
+</div>
+{% endblock %}

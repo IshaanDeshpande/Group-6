@@ -3,28 +3,35 @@
 {% block title %}ResourceConnect - Why It Matters{% endblock %}
 
 {% block content %}
-<main class="content-page">
-  <section class="page-header">
-    <p class="eyebrow">Why It Matters</p>
-    <h1 class="page-title">Homelessness is a local problem with human consequences.</h1>
-    <p class="page-intro">
-      ResourceConnect exists to make help easier to find and make community action easier to start.
-    </p>
-  </section>
+<main class="content-page why-it-matters-page">
+  <h1 class="page-title text-center">Why It Matters</h1>
 
-  <section class="info-grid">
-    <article class="info-card">
-      <h2>People Need Fast Access</h2>
-      <p>When someone is looking for shelter, food, health care, or basic services, clear information can reduce the time between need and support.</p>
-    </article>
-    <article class="info-card">
-      <h2>Communities Need Direction</h2>
-      <p>Many people want to help but do not know where to begin. Education and guided opportunities turn concern into practical action.</p>
-    </article>
-    <article class="info-card">
-      <h2>Connection Builds Momentum</h2>
-      <p>Bringing resources, learning, and volunteer pathways together helps residents and organizations work from the same place.</p>
-    </article>
-  </section>
+  <div class="why-it-matters-grid">
+    <div>
+      <h2 class="why-it-matters-heading">Homelessness is still a major concern in Colorado</h2>
+      <ul class="why-it-matters-list">
+        <li>
+          Colorado's 2024 Point in Time count showed a 30% increase in homelessness compared with the previous year, one of the largest increases in the nation.
+          <a href="https://kdvr.com/news/local/report-homelessness-in-colorado-increased-30-in-2024/" class="why-it-matters-link" target="_blank" rel="noopener">https://kdvr.com/news/local/report-homelessness-in-colorado-increased-30-in-2024/</a>
+        </li>
+        <li>
+          More than 52,800 Coloradans were found to be using homelessness-related housing and support services in 2024, and updated data later increased that estimate to over 54,000 people.
+          <a href="https://denverite.com/2026/05/19/colorado-homelessness-2025-statistics/" class="why-it-matters-link" target="_blank" rel="noopener">https://denverite.com/2026/05/19/colorado-homelessness-2025-statistics/</a>
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="why-it-matters-heading">Volunteering directly supports programs proven to combat homelessness</h2>
+      <ul class="why-it-matters-list">
+        <li>
+          Homelessness organizations in Colorado reported to have created housing opportunities for at least 27,448 people in just a single year
+          <a href="https://www.mdhi.org/" class="why-it-matters-link" target="_blank" rel="noopener">https://www.mdhi.org/</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <a href="{% url 'core:success_stories' %}" class="cta-button self-center text-center max-w-2xl whitespace-normal">Stories From People Experiencing Homelessness</a>
 </main>
 {% endblock %}

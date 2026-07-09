@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}ResourceConnect - Learn About Involvement{% endblock %}
+
+{% block content %}
+<div class="sidebar-page">
+  {% include 'partials/sidebar_get_involved.html' %}
+
+  <main class="sidebar-page-content">
+    <div class="learn-header">
+      <h1 class="learn-title">Learn about involvement</h1>
+      <a href="{% url 'core:get_involved_quiz' %}" class="learn-quiz-link">Link to a short quiz!</a>
+    </div>
+    <p class="learn-intro">The best way to get involved is to volunteer or donate. The easiest way to do this is by searching for volunteer organizations in your area, or through larger organizations that operate</p>
+
+    <div class="org-grid">
+      <section class="org-card">
+        <h2 class="org-card-title">Some national organizations include:</h2>
+      </section>
+      <section class="org-card">
+        <h2 class="org-card-title">Some local organizations include:</h2>
+      </section>
+    </div>
+
+    <section class="quick-facts-card">
+      <h2 class="quick-facts-title">Quick Facts:</h2>
+      <p class="quick-facts-text">Volunteers provide more than food and shelter-they build relationships that reduce isolation and support long term recovery.</p>
+      <p class="quick-facts-text">One hour of volunteer work is valued at about $34.79 in the U.S. That means every hour you volunteer allows nonprofits to stretch their funding to do more good.</p>
+    </section>
+
+    <a href="{% url 'core:chatbot' %}" class="chatbot-cta">Learn about the benefits of involvement with our AI chatbot!</a>
+  </main>
+</div>
+{% endblock %}

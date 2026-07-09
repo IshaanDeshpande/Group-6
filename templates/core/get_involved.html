@@ -3,19 +3,13 @@
 {% block title %}ResourceConnect - Get Involved{% endblock %}
 
 {% block content %}
-<div class="get-involved-container">
-  <aside class="sidebar">
-    <nav class="sidebar-nav">
-      <a href="#" class="sidebar-item active">Main</a>
-      <a href="#" class="sidebar-item">Learn</a>
-      <a href="#" class="sidebar-item">Quiz<span class="sidebar-item-description">Find what involvement suits you!</span></a>
-    </nav>
-  </aside>
+<div class="sidebar-page">
+  {% include 'partials/sidebar_get_involved.html' %}
 
   <!-- Main Content -->
-  <main class="get-involved-content">
-    <h1 class="get-involved-title">Get Involved</h1>
-    <p class="get-involved-subtitle">Search for involvement opportunities</p>
+  <main class="sidebar-page-content">
+    <h1 class="sidebar-page-title">Get Involved</h1>
+    <p class="sidebar-page-subtitle">Search for involvement opportunities</p>
     
     <div class="search-section">
       <input 

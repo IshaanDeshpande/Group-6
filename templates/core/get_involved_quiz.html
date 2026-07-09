@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}ResourceConnect - Involvement Quiz{% endblock %}
+
+{% block content %}
+<main class="content-page quiz-page" x-data="{ answers: { time: null, transport: null, food: null, organization: null, teaching: null, group: null } }">
+  <div class="quiz-header">
+    <h1 class="profile-title">Involvement Quiz</h1>
+    <button
+      type="button"
+      class="quiz-search-button"
+      aria-label="See your results"
+      @click="$refs.quizResult.scrollIntoView({ behavior: 'smooth' })"
+    >
+      <svg width="24" height="24" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2"/>
+        <path d="M12 12L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="quiz-questions">
+    <div class="quiz-question-block">
+      <p class="quiz-question">What is your ideal time commitment per week?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option" :class="{ 'quiz-option--selected': answers.time === '2' }" @click="answers.time = '2'">2 hours</button>
+        <button type="button" class="quiz-option" :class="{ 'quiz-option--selected': answers.time === '5' }" @click="answers.time = '5'">5 hours</button>
+        <button type="button" class="quiz-option" :class="{ 'quiz-option--selected': answers.time === '10' }" @click="answers.time = '10'">10 hours</button>
+        <button type="button" class="quiz-option" :class="{ 'quiz-option--selected': answers.time === '15+' }" @click="answers.time = '15+'">15+ hours</button>
+      </div>
+    </div>
+
+    <div class="quiz-question-block">
+      <p class="quiz-question">Do you have access to transportation?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option" :class="{ 'quiz-option--selected': answers.transport === 'yes' }" @click="answers.transport = 'yes'">Yes</button>
+        <button type="button" class="quiz-option" :class="{ 'quiz-option--selected': answers.transport === 'no' }" @click="answers.transport = 'no'">No</button>
+      </div>
+    </div>
+
+    <div class="quiz-question-block">
+      <p class="quiz-question">Do you like working with food?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option" :class="{ 'quiz-option--selected': answers.food === 'yes' }" @click="answers.food = 'yes'">Yes</button>
+        <button type="button" class="quiz-option" :class="{ 'quiz-option--selected': answers.food === 'no' }" @click="answers.food = 'no'">No</button>
+      </div>
+    </div>
+
+    <div class="quiz-question-block">
+      <p class="quiz-question">Do you like organization?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option" :class="{ 'quiz-option--selected': answers.organization === 'yes' }" @click="answers.organization = 'yes'">Yes</button>
+        <button type="button" class="quiz-option" :class="{ 'quiz-option--selected': answers.organization === 'no' }" @click="answers.organization = 'no'">No</button>
+      </div>
+    </div>
+
+    <div class="quiz-question-block">
+      <p class="quiz-question">Do you like teaching others?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option" :class="{ 'quiz-option--selected': answers.teaching === 'yes' }" @click="answers.teaching = 'yes'">Yes</button>
+        <button type="button" class="quiz-option" :class="{ 'quiz-option--selected': answers.teaching === 'no' }" @click="answers.teaching = 'no'">No</button>
+      </div>
+    </div>
+
+    <div class="quiz-question-block">
+      <p class="quiz-question">Do you like working in a group or individually?</p>
+      <div class="quiz-options">
+        <button type="button" class="quiz-option" :class="{ 'quiz-option--selected': answers.group === 'group' }" @click="answers.group = 'group'">Group</button>
+        <button type="button" class="quiz-option" :class="{ 'quiz-option--selected': answers.group === 'individually' }" @click="answers.group = 'individually'">Individually</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-result" x-ref="quizResult">
+    <h2 class="profile-title">Result:</h2>
+    <div class="quiz-result-placeholder"></div>
+  </div>
+</main>
+{% endblock %}

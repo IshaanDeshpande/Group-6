@@ -42,6 +42,14 @@
     @apply ml-auto rounded-md bg-white/10 px-4 py-2 hover:bg-white/15;
   }
 
+  .nav-avatar {
+    @apply ml-auto block shrink-0;
+  }
+
+  .nav-avatar-img {
+    @apply w-10 h-10 md:w-12 md:h-12 rounded-full object-cover;
+  }
+
   .hero {
     @apply flex flex-1 flex-col sm:flex-row items-center justify-center gap-8 text-center sm:text-left px-6 py-12 md:py-24 lg:py-32;
   }
@@ -98,7 +106,7 @@
     @apply text-red-600 font-subtitle text-sm md:text-base;
   }
 
-  .get-involved-container {
+  .sidebar-page {
     @apply flex flex-1 flex-col sm:flex-row;
   }
 
@@ -126,15 +134,15 @@
     @apply text-sm font-normal text-gray-600;
   }
 
-  .get-involved-content {
+  .sidebar-page-content {
     @apply flex-1 max-w-4xl mx-auto p-8 md:p-12;
   }
 
-  .get-involved-title {
+  .sidebar-page-title {
     @apply m-0 mb-2 text-black font-heading font-bold text-3xl md:text-4xl lg:text-5xl;
   }
 
-  .get-involved-subtitle {
+  .sidebar-page-subtitle {
     @apply mt-2 mb-8 text-black font-subtitle text-lg md:text-2xl;
   }
 
@@ -178,6 +186,18 @@
     @apply flex-1 w-full max-w-6xl mx-auto px-6 py-10 md:py-16;
   }
 
+  .about-page {
+    @apply flex flex-col items-center gap-8 md:gap-12 text-center;
+  }
+
+  .about-title {
+    @apply m-0 text-black font-heading font-bold text-4xl md:text-6xl lg:text-7xl leading-normal;
+  }
+
+  .about-body {
+    @apply flex flex-col gap-6 max-w-4xl text-black font-subtitle text-lg md:text-2xl lg:text-3xl leading-relaxed;
+  }
+
   .page-header {
     @apply max-w-4xl mb-10 md:mb-14;
   }
@@ -216,8 +236,224 @@
     @apply grid grid-cols-1 md:grid-cols-2 gap-8 border-t-2 border-nav-bg pt-8;
   }
 
-  .resource-search {
-    @apply max-w-4xl;
+  .resource-categories {
+    @apply grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4 mt-8 md:mt-10 mb-6 md:mb-8;
+  }
+
+  .resource-category {
+    @apply border-4 md:border-[6px] lg:border-[7.5px] border-nav-bg rounded-2xl lg:rounded-[1.5625rem] bg-white text-black font-heading font-bold text-base md:text-xl lg:text-2xl px-4 py-4 md:py-6 cursor-pointer transition-colors hover:bg-nav-bg/10;
+  }
+
+  .resource-category--selected {
+    @apply bg-nav-bg text-white;
+  }
+
+  .resource-map {
+    @apply relative border-4 md:border-[6px] lg:border-[7.5px] border-nav-bg rounded-2xl lg:rounded-[1.5625rem] min-h-[24rem] md:min-h-[36rem];
+  }
+
+  .resource-map-marker {
+    @apply absolute w-6 h-6 md:w-8 md:h-8 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#D9D9D9];
+  }
+
+  .why-it-matters-page {
+    @apply flex flex-col gap-10 md:gap-14;
+  }
+
+  .why-it-matters-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16;
+  }
+
+  .why-it-matters-heading {
+    @apply m-0 mb-4 text-center text-black font-heading font-bold text-2xl md:text-3xl lg:text-4xl;
+  }
+
+  .why-it-matters-list {
+    @apply list-disc pl-6 flex flex-col gap-4 text-black font-subtitle text-lg md:text-xl leading-relaxed;
+  }
+
+  .why-it-matters-link {
+    @apply block text-black underline hover:no-underline break-words;
+  }
+
+  .stories-banner {
+    @apply bg-[#1F7E43] py-10 md:py-16 px-6;
+  }
+
+  .stories-banner-title {
+    @apply m-0 text-center text-white font-heading font-bold text-4xl md:text-6xl lg:text-7xl;
+  }
+
+  .stories-page {
+    @apply flex flex-col gap-16 md:gap-24;
+  }
+
+  .story {
+    @apply flex flex-col items-center gap-6 md:gap-8 text-center;
+  }
+
+  .story-title {
+    @apply m-0 text-nav-bg font-heading font-bold text-3xl md:text-5xl lg:text-6xl;
+  }
+
+  .story-text {
+    @apply max-w-4xl text-black font-heading font-semibold text-lg md:text-2xl leading-relaxed;
+  }
+
+  .story-image {
+    @apply w-full max-w-3xl h-auto;
+  }
+
+  .story-caption {
+    @apply max-w-3xl text-black font-heading font-semibold text-base md:text-lg;
+  }
+
+  .story-link {
+    @apply text-black underline hover:no-underline;
+  }
+
+  .chatbot-page {
+    @apply flex flex-col gap-6 md:gap-8;
+  }
+
+  .chatbot-window {
+    @apply border-4 md:border-[6px] lg:border-[7.5px] border-nav-bg rounded-2xl lg:rounded-[1.5625rem] min-h-[20rem] md:min-h-[32rem] p-6 md:p-8;
+  }
+
+  .chatbot-input {
+    @apply w-full rounded-2xl bg-button-bg text-white placeholder-white/90 font-subtitle text-lg md:text-2xl lg:text-3xl text-center px-6 py-6 md:py-8 border-none outline-none;
+  }
+
+  .quiz-page {
+    @apply flex flex-col gap-8 md:gap-10;
+  }
+
+  .quiz-header {
+    @apply flex items-start justify-between gap-6;
+  }
+
+  .quiz-search-button {
+    @apply flex shrink-0 items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full bg-black text-white border-none cursor-pointer transition-all hover:brightness-125;
+  }
+
+  .quiz-questions {
+    @apply flex flex-col gap-6 md:gap-8;
+  }
+
+  .quiz-question-block {
+    @apply flex flex-col gap-3 md:gap-4;
+  }
+
+  .quiz-question {
+    @apply m-0 text-black font-subtitle text-xl md:text-2xl;
+  }
+
+  .quiz-options {
+    @apply flex flex-wrap gap-4 md:gap-6;
+  }
+
+  .quiz-option {
+    @apply inline-flex items-center justify-center rounded-full border-4 md:border-[6px] border-nav-bg bg-white text-black font-subtitle text-lg md:text-xl px-6 md:px-10 py-3 md:py-4 cursor-pointer transition-colors hover:bg-nav-bg/10;
+  }
+
+  .quiz-option--selected {
+    @apply bg-nav-bg text-white;
+  }
+
+  .quiz-result {
+    @apply flex flex-col gap-4 md:gap-6;
+  }
+
+  .quiz-result-placeholder {
+    @apply min-h-24 md:min-h-32 bg-[#D9D9D9] rounded-md;
+  }
+
+  .learn-header {
+    @apply flex flex-col md:flex-row md:items-start gap-4 md:gap-8 mb-6;
+  }
+
+  .learn-title {
+    @apply flex-1 m-0 text-center text-black font-heading font-bold text-3xl md:text-4xl lg:text-5xl;
+  }
+
+  .learn-quiz-link {
+    @apply shrink-0 text-center text-black font-heading font-bold text-lg md:text-xl no-underline hover:underline;
+  }
+
+  .learn-intro {
+    @apply max-w-4xl mx-auto mb-8 md:mb-10 text-center text-black font-subtitle text-lg md:text-2xl leading-relaxed;
+  }
+
+  .org-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-8 md:mb-10;
+  }
+
+  .org-card {
+    @apply border-4 md:border-[6px] lg:border-[7.5px] border-nav-bg rounded-2xl lg:rounded-[1.5625rem] p-6 md:p-8 min-h-48 md:min-h-64;
+  }
+
+  .org-card-title {
+    @apply m-0 text-center text-black font-subtitle text-xl md:text-2xl lg:text-3xl;
+  }
+
+  .quick-facts-card {
+    @apply border-4 md:border-[6px] lg:border-[7.5px] border-nav-bg rounded-2xl lg:rounded-[1.5625rem] p-6 md:p-8 mb-8 md:mb-10 text-center;
+  }
+
+  .quick-facts-title {
+    @apply m-0 mb-4 text-black font-subtitle text-xl md:text-2xl lg:text-3xl;
+  }
+
+  .quick-facts-text {
+    @apply m-0 mb-4 text-black font-subtitle text-lg md:text-xl leading-relaxed last:mb-0;
+  }
+
+  .chatbot-cta {
+    @apply flex items-center justify-center rounded-2xl bg-button-bg text-white font-subtitle text-lg md:text-2xl lg:text-3xl text-center px-6 py-6 md:py-8 no-underline;
+  }
+
+  .profile-page {
+    @apply flex-1 w-full max-w-7xl mx-auto px-6 py-10 md:py-16 flex flex-col gap-8 md:gap-12;
+  }
+
+  .profile-title {
+    @apply m-0 text-black font-heading font-bold text-3xl md:text-5xl lg:text-6xl;
+  }
+
+  .profile-grid {
+    @apply grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10;
+  }
+
+  .profile-card {
+    @apply flex flex-col gap-6 md:gap-8 border-4 md:border-[6px] lg:border-[7.5px] border-nav-bg rounded-2xl lg:rounded-[1.5625rem] p-8 md:p-10 lg:p-12;
+  }
+
+  .profile-card-title {
+    @apply m-0 text-center text-black font-heading font-bold text-3xl md:text-4xl lg:text-5xl;
+  }
+
+  .profile-form {
+    @apply flex flex-col gap-6 md:gap-8;
+  }
+
+  .profile-field {
+    @apply grid grid-cols-[6rem_1fr] sm:grid-cols-[8rem_1fr] items-center gap-4;
+  }
+
+  .profile-field-label {
+    @apply text-nav-bg font-subtitle text-base md:text-lg lg:text-xl;
+  }
+
+  .delete-account-link {
+    @apply self-start border-none bg-transparent p-0 text-[#FF383C] font-subtitle text-sm md:text-base cursor-pointer hover:underline;
+  }
+
+  .favorites-subtitle {
+    @apply m-0 text-black font-heading font-bold text-base md:text-lg;
+  }
+
+  .favorites-placeholder {
+    @apply flex-1 min-h-64 md:min-h-96 bg-[#D9D9D9] rounded-md;
   }
 
   .site-footer {

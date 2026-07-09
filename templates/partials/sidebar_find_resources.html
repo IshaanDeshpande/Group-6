@@ -1,0 +1,7 @@
+<aside class="sidebar">
+  <nav class="sidebar-nav">
+    <a href="{% url 'resources:find_resources' %}" class="sidebar-item{% if active_tab == 'main' %} active{% endif %}">Main</a>
+    <a href="{% url 'resources:find_resources_map' %}" class="sidebar-item{% if active_tab == 'map' %} active{% endif %}">Map</a>
+    <a href="{% url 'resources:find_resources_personalized' %}" class="sidebar-item{% if active_tab == 'personalized' %} active{% endif %}">Get Personalized Help</a>
+  </nav>
+</aside>

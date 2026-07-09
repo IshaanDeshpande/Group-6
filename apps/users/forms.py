@@ -36,6 +36,35 @@ class SignUpForm(forms.Form):
         return cleaned_data
 
 
+class ProfileForm(forms.Form):
+    username = forms.CharField(
+        max_length=150,
+        widget=forms.TextInput(attrs={'class': 'form-input'}),
+    )
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={'class': 'form-input'}),
+    )
+    zip_code = forms.CharField(
+        max_length=10,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-input'}),
+    )
+    password = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(attrs={'class': 'form-input', 'placeholder': 'Leave blank to keep current password'}),
+    )
+
+    def __init__(self, *args, user=None, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        if self.user and User.objects.exclude(pk=self.user.pk).filter(username=username).exists():
+            raise forms.ValidationError('This username is already taken.')
+        return username
+
+
 class LoginForm(forms.Form):
     username = forms.CharField(
         widget=forms.TextInput(attrs={

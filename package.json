@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/IshaanDeshpande/Group-6#readme",
   "devDependencies": {
+    "@amplitude/analytics-core": "^2.52.0",
     "@tailwindcss/cli": "^4.3.2",
     "autoprefixer": "^10.5.2",
     "postcss": "^8.5.15",

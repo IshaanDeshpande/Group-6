@@ -3,16 +3,13 @@
 {% block title %}ResourceConnect - Find Resources{% endblock %}
 
 {% block content %}
-<main class="content-page">
-  <section class="page-header">
-    <p class="eyebrow">Find Resources</p>
-    <h1 class="page-title">Search for nearby support services.</h1>
-    <p class="page-intro">
-      This page will help people locate shelters, food support, health services, and other resource centers.
-    </p>
-  </section>
+<div class="sidebar-page">
+  {% include 'partials/sidebar_find_resources.html' %}
 
-  <section class="resource-search">
+  <main class="sidebar-page-content">
+    <h1 class="sidebar-page-title">Find Resources</h1>
+    <p class="sidebar-page-subtitle">Locate helpful resources near you</p>
+
     <div class="search-section">
       <input
         type="text"
@@ -29,11 +26,11 @@
     </div>
 
     <div class="results-section">
-      <h2 class="results-heading">RESOURCE RESULTS</h2>
+      <h2 class="results-heading">RESULTS</h2>
       <div class="results-container">
-        <p class="empty-state">Resource search results and map information will appear here as the database is connected.</p>
+        <p class="empty-state">Resource search results will appear here as the database is connected.</p>
       </div>
     </div>
-  </section>
-</main>
+  </main>
+</div>
 {% endblock %}
