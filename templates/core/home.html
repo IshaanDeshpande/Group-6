@@ -3,11 +3,14 @@
 {% block title %}ResourceConnect - Help End Homelessness in Colorado{% endblock %}
 
 {% block content %}
-{% include 'partials/navbar.html' %}
-
-<main class="hero">
-  <h1 class="hero-title">ResourceConnect</h1>
-  <p class="hero-subtitle">Help End Homelessness in Colorado– Save lives.</p>
-  <button type="button" class="cta-button">Get Started</button>
-</main>
-{% endblock %}
+<div class="main-container">
+  <main class="hero">
+    <h1 class="hero-title">ResourceConnect</h1>
+    <p class="hero-subtitle">Find support, learn about homelessness, and discover ways to help in Colorado.</p>
+    <div class="hero-actions">
+      <a href="{% url 'resources:find_resources' %}" class="cta-button">Find Resources</a>
+      <a href="{% url 'core:get_involved' %}" class="secondary-button">Get Involved</a>
+    </div>
+  </main>
+</div>
+  {% endblock %}

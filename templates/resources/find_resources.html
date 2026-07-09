@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}ResourceConnect - Find Resources{% endblock %}
+
+{% block content %}
+<main class="content-page">
+  <section class="page-header">
+    <p class="eyebrow">Find Resources</p>
+    <h1 class="page-title">Search for nearby support services.</h1>
+    <p class="page-intro">
+      This page will help people locate shelters, food support, health services, and other resource centers.
+    </p>
+  </section>
+
+  <section class="resource-search">
+    <div class="search-section">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search by service, city, or ZIP code"
+        aria-label="Search resources"
+      />
+      <button class="search-button" aria-label="Search resources">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2"/>
+          <path d="M12 12L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="results-section">
+      <h2 class="results-heading">RESOURCE RESULTS</h2>
+      <div class="results-container">
+        <p class="empty-state">Resource search results and map information will appear here as the database is connected.</p>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

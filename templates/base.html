@@ -16,8 +16,11 @@
   {% block extra_css %}{% endblock %}
 </head>
 <body>
-  {% block content %}{% endblock %}
-  <hr class="page-divider" />
+  <div class="site-shell">
+    {% include 'partials/navbar.html' %}
+    {% block content %}{% endblock %}
+    {% include 'partials/footer.html' %}
+  </div>
   {% block extra_js %}{% endblock %}
 </body>
 </html>

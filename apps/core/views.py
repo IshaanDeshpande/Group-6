@@ -5,3 +5,9 @@ def home(request):
 
 def get_involved(request):
     return render(request, 'core/get_involved.html')
+
+def why_it_matters(request):
+    return render(request, 'core/why_it_matters.html')
+
+def about(request):
+    return render(request, 'core/about.html')

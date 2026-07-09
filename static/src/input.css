@@ -9,29 +9,41 @@
     @apply w-full border-0 border-t border-black m-0;
   }
 
+  .site-shell {
+    @apply min-h-screen flex flex-col bg-white text-black font-heading;
+  }
+
   .navbar {
     @apply bg-nav-bg;
   }
 
   .nav-container {
-    @apply flex flex-wrap items-center gap-4 md:gap-8 max-w-7xl mx-auto px-4 md:px-8 py-6;
+    @apply flex flex-wrap items-center gap-4 md:gap-8 max-w-7xl mx-auto px-4 md:px-8 py-5;
+  }
+
+  .nav-brand {
+    @apply text-white font-heading font-bold text-xl md:text-2xl no-underline whitespace-nowrap;
   }
 
   .nav-links {
-    @apply flex flex-wrap items-center gap-4 md:gap-12 list-none m-0 p-0;
+    @apply flex flex-wrap items-center gap-4 md:gap-8 list-none m-0 p-0;
   }
 
   .nav-link,
   .nav-login {
-    @apply text-white font-heading font-semibold text-base md:text-xl lg:text-2xl whitespace-nowrap no-underline;
+    @apply text-white/90 font-heading font-semibold text-sm md:text-base lg:text-lg whitespace-nowrap no-underline transition-colors hover:text-white;
+  }
+
+  .nav-link.active {
+    @apply text-white underline underline-offset-8 decoration-2;
   }
 
   .nav-login {
-    @apply ml-auto;
+    @apply ml-auto rounded-md bg-white/10 px-4 py-2 hover:bg-white/15;
   }
 
   .hero {
-    @apply flex flex-col items-center text-center px-6 py-12 md:py-24 lg:py-32;
+    @apply flex flex-1 flex-col sm:flex-row items-center justify-center gap-8 text-center sm:text-left px-6 py-12 md:py-24 lg:py-32;
   }
 
   .hero-title {
@@ -42,12 +54,20 @@
     @apply max-w-4xl m-6 md:m-8 lg:m-12 text-black font-subtitle font-normal text-base md:text-lg lg:text-2xl leading-normal;
   }
 
+  .hero-actions {
+    @apply flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 md:mt-12 lg:mt-16;
+  }
+
   .cta-button {
-    @apply mt-8 md:mt-12 lg:mt-16 border-none rounded-lg bg-button-bg text-black font-heading font-semibold text-lg md:text-2xl lg:text-3xl px-8 md:px-12 lg:px-16 py-4 md:py-6 lg:py-8 cursor-pointer transition-all hover:brightness-95;
+    @apply inline-flex items-center justify-center border-none rounded-lg bg-button-bg text-black font-heading font-semibold text-lg md:text-2xl px-8 md:px-12 py-4 md:py-5 cursor-pointer no-underline transition-all hover:brightness-95;
+  }
+
+  .secondary-button {
+    @apply inline-flex items-center justify-center rounded-lg border-2 border-nav-bg bg-white text-nav-bg font-heading font-semibold text-lg md:text-2xl px-8 md:px-12 py-4 md:py-5 no-underline transition-colors hover:bg-nav-bg hover:text-white;
   }
 
   .auth-page {
-    @apply flex flex-col items-center px-6 py-12 md:py-16;
+    @apply flex flex-1 flex-col items-center px-6 py-12 md:py-16;
   }
 
   .auth-header {
@@ -79,7 +99,7 @@
   }
 
   .get-involved-container {
-    @apply flex flex-col sm:flex-row min-h-[calc(100vh-5rem)];
+    @apply flex flex-1 flex-col sm:flex-row;
   }
 
   .sidebar {
@@ -148,6 +168,72 @@
 
   .results-container {
     @apply min-h-40 border-4 border-nav-bg rounded-3xl p-8;
+  }
+
+  .empty-state {
+    @apply m-0 text-gray-600 font-subtitle text-base md:text-lg;
+  }
+
+  .content-page {
+    @apply flex-1 w-full max-w-6xl mx-auto px-6 py-10 md:py-16;
+  }
+
+  .page-header {
+    @apply max-w-4xl mb-10 md:mb-14;
+  }
+
+  .eyebrow {
+    @apply m-0 mb-3 text-nav-bg font-heading text-sm md:text-base font-bold uppercase;
+  }
+
+  .page-title {
+    @apply m-0 text-black font-heading font-bold text-3xl md:text-5xl leading-tight;
+  }
+
+  .page-intro {
+    @apply mt-5 mb-0 text-black font-subtitle text-lg md:text-2xl leading-relaxed;
+  }
+
+  .info-grid {
+    @apply grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6;
+  }
+
+  .info-card {
+    @apply border-2 border-nav-bg rounded-lg p-6 bg-white;
+  }
+
+  .info-card h2,
+  .split-section h2 {
+    @apply mt-0 mb-3 text-black font-heading font-bold text-xl md:text-2xl;
+  }
+
+  .info-card p,
+  .split-section p {
+    @apply m-0 text-gray-700 font-subtitle text-base md:text-lg leading-relaxed;
+  }
+
+  .split-section {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-8 border-t-2 border-nav-bg pt-8;
+  }
+
+  .resource-search {
+    @apply max-w-4xl;
+  }
+
+  .site-footer {
+    @apply mt-auto border-t border-nav-bg/20 bg-white;
+  }
+
+  .footer-container {
+    @apply flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between max-w-7xl mx-auto px-4 md:px-8 py-5;
+  }
+
+  .footer-brand {
+    @apply m-0 text-nav-bg font-heading font-bold;
+  }
+
+  .footer-copy {
+    @apply m-0 text-gray-600 font-subtitle text-sm md:text-base;
   }
 
   @media (max-width: 640px) {

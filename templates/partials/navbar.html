@@ -1,13 +1,16 @@
 {% load static %}
 <header class="navbar">
+  {% with current=request.resolver_match.url_name namespace=request.resolver_match.namespace %}
   <nav class="nav-container">
+    <a href="{% url 'core:home' %}" class="nav-brand">ResourceConnect</a>
     <ul class="nav-links">
-      <li><a href="{% url 'core:home' %}" class="nav-link">Home</a></li>
-      <li><a href="#" class="nav-link">Get Involved</a></li>
-      <li><a href="#" class="nav-link">Find Resources</a></li>
-      <li><a href="#" class="nav-link">Why It Matters</a></li>
-      <li><a href="#" class="nav-link">About Us</a></li>
+      <li><a href="{% url 'core:home' %}" class="nav-link{% if namespace == 'core' and current == 'home' %} active{% endif %}">Home</a></li>
+      <li><a href="{% url 'core:get_involved' %}" class="nav-link{% if namespace == 'core' and current == 'get_involved' %} active{% endif %}">Get Involved</a></li>
+      <li><a href="{% url 'resources:find_resources' %}" class="nav-link{% if namespace == 'resources' %} active{% endif %}">Find Resources</a></li>
+      <li><a href="{% url 'core:why_it_matters' %}" class="nav-link{% if namespace == 'core' and current == 'why_it_matters' %} active{% endif %}">Why It Matters</a></li>
+      <li><a href="{% url 'core:about' %}" class="nav-link{% if namespace == 'core' and current == 'about' %} active{% endif %}">About Us</a></li>
     </ul>
     <a href="{% url 'users:signup' %}" class="nav-login">Sign Up / Login</a>
   </nav>
+  {% endwith %}
 </header>
