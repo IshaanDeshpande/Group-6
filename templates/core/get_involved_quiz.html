@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}ResourceConnect - Involvement Quiz{% endblock %}
 
 {% block content %}
-<main class="content-page quiz-page" x-data="{ answers: { time: null, transport: null, food: null, organization: null, teaching: null, group: null } }">
+<main class="content-page quiz-page" x-data="quizApp()">
   <div class="quiz-header">
     <h1 class="profile-title">Involvement Quiz</h1>
     <button
@@ -73,7 +74,22 @@
 
   <div class="quiz-result" x-ref="quizResult">
     <h2 class="profile-title">Result:</h2>
-    <div class="quiz-result-placeholder"></div>
+    <template x-if="!isComplete">
+      <div class="quiz-result-placeholder">
+        <p class="empty-state">Answer all the questions above to see your personalized result.</p>
+      </div>
+    </template>
+    <template x-if="isComplete">
+      <div class="quiz-result-card">
+        <h3 class="quiz-result-title" x-text="result.title"></h3>
+        <p class="quiz-result-text" x-text="result.description"></p>
+        <a :href="'{% url 'core:get_involved' %}?q=' + encodeURIComponent(result.title)" class="quiz-result-link">See matching opportunities</a>
+      </div>
+    </template>
   </div>
 </main>
+{% endblock %}
+
+{% block extra_js %}
+<script defer src="{% static 'js/quiz.js' %}"></script>
 {% endblock %}

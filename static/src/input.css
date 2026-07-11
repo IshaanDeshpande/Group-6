@@ -373,7 +373,23 @@
   }
 
   .quiz-result-placeholder {
-    @apply min-h-24 md:min-h-32 bg-[#D9D9D9] rounded-md;
+    @apply flex items-center justify-center min-h-24 md:min-h-32 bg-[#D9D9D9] rounded-md p-6 text-center;
+  }
+
+  .quiz-result-card {
+    @apply flex flex-col gap-3 md:gap-4 border-4 md:border-[6px] lg:border-[7.5px] border-nav-bg rounded-2xl lg:rounded-[1.5625rem] bg-white p-6 md:p-8;
+  }
+
+  .quiz-result-title {
+    @apply m-0 text-black font-heading font-bold text-2xl md:text-3xl;
+  }
+
+  .quiz-result-text {
+    @apply m-0 text-black font-subtitle text-base md:text-lg leading-relaxed;
+  }
+
+  .quiz-result-link {
+    @apply self-start text-nav-bg font-heading font-semibold text-base md:text-lg no-underline hover:underline;
   }
 
   .learn-header {
