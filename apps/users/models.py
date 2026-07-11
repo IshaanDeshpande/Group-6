@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 from django.conf import settings
 from django.db import models
 
@@ -10,9 +8,3 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
-=======
-from django.db import models
->>>>>>> ff21b459de8db17bb1bb0512dad38e2e6cb193ca
-=======
-from django.db import models
->>>>>>> ff21b459de8db17bb1bb0512dad38e2e6cb193ca
