@@ -2,9 +2,12 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
+# Add require_POST to protect our favorite submission route
+from django.views.decorators.http import require_POST 
 
 from .forms import LoginForm, ProfileForm, SignUpForm
-from .models import Profile
+# Import the new FavoriteResource model alongside Profile
+from .models import Profile, FavoriteResource 
 
 
 def signup(request):
@@ -82,4 +85,28 @@ def profile(request):
             'zip_code': profile_obj.zip_code,
         })
         
-    return render(request, 'users/profile.html', {'form': form})
+    # --- UPDATE HERE: Fetch the user's saved favorites ---
+    favorites = request.user.favorites.all().order_by('-created_at')
+        
+    # Add favorites to the context dictionary
+    return render(request, 'users/profile.html', {
+        'form': form,
+        'favorites': favorites
+    })
+
+
+# --- NEW VIEW: Handle saving the favorited item ---
+@login_required
+@require_POST
+def add_to_favorites(request):
+    FavoriteResource.objects.get_or_create(
+        user=request.user,
+        name=request.POST.get('name'),
+        agency_name=request.POST.get('agency_name'),
+        description=request.POST.get('description'),
+        address=request.POST.get('address'),
+        phone=request.POST.get('phone'),
+        website=request.POST.get('website'),
+    )
+    # Redirect right back to the exact search results page they were looking at
+    return redirect(request.META.get('HTTP_REFERER', 'resources:find_resources'))
