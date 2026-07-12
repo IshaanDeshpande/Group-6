@@ -17,7 +17,15 @@ def signup(request):
                 password=form.cleaned_data['password1'],
             )
             Profile.objects.create(user=user, zip_code=form.cleaned_data['zip_code'])
+            
+            # Log the user in
             auth_login(request, user)
+            
+            # KEEP THEM SIGNED IN: 
+            # 0 means the cookie expires when the browser closes, but we will configure 
+            # settings.py next to make it truly stay logged in indefinitely.
+            request.session.set_expiry(0)
+            
             return redirect('core:home')
     else:
         form = SignUpForm()
@@ -35,6 +43,10 @@ def login_view(request):
             )
             if user is not None:
                 auth_login(request, user)
+                
+                # KEEP THEM SIGNED IN ON LOGIN TOO:
+                request.session.set_expiry(0)
+                
                 return redirect('core:home')
             form.add_error(None, 'Invalid username or password.')
     else:
@@ -71,4 +83,11 @@ def profile(request):
             'email': request.user.email,
             'zip_code': profile_obj.zip_code,
         })
-    return render(request, 'users/profile.html', {'form': form})
+        
+    # FUTURE STEPS: You can fetch the user's favorited items here to pass to profile.html
+    # favorite_resources = request.user.favorite_resources.all()
+    
+    return render(request, 'users/profile.html', {
+        'form': form,
+        # 'favorite_resources': favorite_resources
+    })
