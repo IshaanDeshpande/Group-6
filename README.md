@@ -1,4 +1,6 @@
-To run website, open repo in vs code and run this in the terminal:
+## Running website in django server
+
+Open repo in vs code and run this in the terminal:
 
 cd C:\Users\popej\Group-6
 
@@ -7,6 +9,17 @@ cd C:\Users\popej\Group-6
 python manage.py runserver
 
 Then, click the link it gives you to open the website dev server
+
+
+ 
+
+## Running AI Chatbot Instructions:
+
+Install Ollama from https://ollama.com
+
+After installing ollama, open the vs code terminal and run: ollama pull llama3.1:8b
+
+Then run ollama in the backround by running: ollama serve
 
 # ResourceConnect
 
