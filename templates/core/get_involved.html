@@ -3,23 +3,22 @@
 {% block title %}ResourceConnect - Get Involved{% endblock %}
 
 {% block content %}
-<div class="sidebar-page">
+<div class="get-involved-layout">
+  
   {% include 'partials/sidebar_get_involved.html' %}
 
-  <!-- Main Content -->
-  <main class="sidebar-page-content">
-    <h1 class="sidebar-page-title">Get Involved</h1>
-    <p class="sidebar-page-subtitle">Search for involvement opportunities</p>
+  <main class="get-involved-main">
+    <h1>Get Involved</h1>
+    <p>Search for involvement opportunities</p>
     
-    <div class="search-section">
+    <div class="get-involved-search">
       <input
         type="text"
-        class="search-input"
         placeholder="Search for involvement opportunities"
         aria-label="Search for involvement opportunities"
         value="{{ search_query }}"
       />
-      <button class="search-button" aria-label="Search">
+      <button type="button" aria-label="Search">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2"/>
           <path d="M12 12L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -27,10 +26,10 @@
       </button>
     </div>
 
-    <div class="results-section">
-      <h2 class="results-heading">RESULTS</h2>
-      <div class="results-container">
-        <p class="empty-state">Volunteer opportunities and education links will appear here as they are added.</p>
+    <div>
+      <h2>RESULTS</h2>
+      <div class="get-involved-results" style="padding: 1rem; display: flex; align-items: center; justify-content: center;">
+        <p class="empty-state" style="margin: 0; color: #666;">Volunteer opportunities and education links will appear here as they are added.</p>
       </div>
     </div>
   </main>

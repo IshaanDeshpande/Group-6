@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Get Involved - ResourceConnect{% endblock %}
+
+{% block content %}
+<div class="get-involved-layout">
+  <aside class="get-involved-sidebar" id="sidebar">
+    <button class="sidebar-collapse" id="sidebarToggle" type="button">
+      &lt;&lt;
+    </button>
+
+    <div class="sidebar-content">
+      <a href="#" class="sidebar-button">Main</a>
+      <a href="#" class="sidebar-button">Learn</a>
+      <a href="#" class="sidebar-button">Quiz</a>
+
+      <p class="sidebar-help-text">
+        Not sure where to start? Take the quiz to find involvement opportunities that fit you.
+      </p>
+    </div>
+  </aside>
+
+  <main class="get-involved-main">
+    <h1>Get Involved</h1>
+    <p>Search for involvement opportunities.</p>
+
+    <div class="get-involved-search">
+      <input type="text" placeholder="Search opportunities..." />
+      <button type="button">🔍</button>
+    </div>
+
+    <h2>RESULTS</h2>
+    <div class="get-involved-results"></div>
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const sidebar = document.getElementById("sidebar");
+  const sidebarToggle = document.getElementById("sidebarToggle");
+
+  sidebarToggle.addEventListener("click", function () {
+    sidebar.classList.toggle("collapsed");
+
+    if (sidebar.classList.contains("collapsed")) {
+      sidebarToggle.innerHTML = "&gt;&gt;";
+    } else {
+      sidebarToggle.innerHTML = "&lt;&lt;";
+    }
+  });
+</script>
+{% endblock %}
