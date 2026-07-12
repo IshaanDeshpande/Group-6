@@ -8,12 +8,10 @@
     <div class="hero-content">
       <h1 class="hero-title">ResourceConnect</h1>
       <p class="hero-subtitle">Find support, learn about homelessness, and discover ways to help in Colorado.</p>
-      
-      <div class="hero-actions" style="display: flex; gap: 1.5rem; justify-content: center; align-items: center; flex-wrap: wrap;">
-        <a href="{% url 'resources:find_resources' %}" class="cta-button" style="margin: 2rem 0 0;">Find Resources</a>
-        <a href="{% url 'core:get_involved' %}" class="cta-button" style="margin: 2rem 0 0; background: #e2e8f0; border: 2px solid var(--color-nav-bg);">Get Involved</a>
+      <div class="hero-actions">
+        <a href="{% url 'resources:find_resources' %}" class="cta-button">Find Resources</a>
+        <a href="{% url 'core:get_involved' %}" class="secondary-button">Get Involved</a>
       </div>
-      
     </div>
   </main>
 </div>
