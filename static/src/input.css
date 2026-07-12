@@ -245,11 +245,14 @@
   }
 
   .resource-categories {
-    @apply grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4 mt-8 md:mt-10 mb-6 md:mb-8;
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4 mt-8 md:mt-10 mb-6 md:mb-8;
   }
 
   .resource-category {
-    @apply border-4 md:border-[6px] lg:border-[7.5px] border-nav-bg rounded-2xl lg:rounded-[1.5625rem] bg-white text-black font-heading font-bold text-base md:text-xl lg:text-2xl px-4 py-4 md:py-6 cursor-pointer transition-colors hover:bg-nav-bg/10;
+    @apply border-4 md:border-[6px] lg:border-[7.5px] border-nav-bg rounded-2xl lg:rounded-[1.5625rem] bg-white text-black font-heading font-bold text-sm sm:text-base md:text-xl lg:text-2xl px-4 py-4 md:py-6 cursor-pointer transition-colors hover:bg-nav-bg/10 flex items-center justify-center text-center leading-tight whitespace-normal min-w-0;
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: manual;
   }
 
   .resource-category--selected {
