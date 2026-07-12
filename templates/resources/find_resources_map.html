@@ -23,3 +23,49 @@
   </main>
 </div>
 {% endblock %}
+
+{% block extra_js %}
+<script>
+  (function () {
+    const MIN_FONT_SIZE_PX = 11;
+    const SHRINK_STEP_PX = 0.5;
+
+    function fitResourceCategoryLabel(button) {
+      button.style.fontSize = '';
+      button.style.lineHeight = '';
+
+      let currentSize = parseFloat(getComputedStyle(button).fontSize);
+      while (
+        (button.scrollWidth > button.clientWidth || button.scrollHeight > button.clientHeight) &&
+        currentSize > MIN_FONT_SIZE_PX
+      ) {
+        currentSize -= SHRINK_STEP_PX;
+        button.style.fontSize = currentSize + 'px';
+        button.style.lineHeight = '1.1';
+      }
+    }
+
+    function fitAllResourceCategoryLabels() {
+      const buttons = document.querySelectorAll('.resource-category');
+      buttons.forEach(fitResourceCategoryLabel);
+    }
+
+    let resizeFrame = null;
+    function scheduleFit() {
+      if (resizeFrame) {
+        cancelAnimationFrame(resizeFrame);
+      }
+      resizeFrame = requestAnimationFrame(fitAllResourceCategoryLabels);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      fitAllResourceCategoryLabels();
+      window.addEventListener('resize', scheduleFit);
+
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(fitAllResourceCategoryLabels);
+      }
+    });
+  })();
+</script>
+{% endblock %}
