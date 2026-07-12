@@ -107,3 +107,8 @@ CORS_ALLOWED_ORIGINS = env(
     'CORS_ALLOWED_ORIGINS',
     default='http://localhost:3000,http://localhost:8000'
 ).split(',')
+
+AI_API_KEY = env('AI_API_KEY', default='')
+AI_API_URL = env('AI_API_URL', default='https://api.openai.com/v1/chat/completions')
+AI_MODEL = env('AI_MODEL', default='gpt-4o-mini')
+AI_TIMEOUT_SECONDS = env.int('AI_TIMEOUT_SECONDS', default=180)

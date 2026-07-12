@@ -2,9 +2,121 @@
 
 {% block title %}ResourceConnect - AI Chatbot{% endblock %}
 
+{% block extra_css %}
+<style>
+  .chatbot-form {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .chatbot-send-btn {
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.7rem 1rem;
+    background: #1f7a8c;
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .chatbot-send-btn:hover {
+    background: #196a79;
+  }
+
+  .chatbot-bubble {
+    max-width: 80%;
+    padding: 0.6rem 0.8rem;
+    border-radius: 0.8rem;
+    margin: 0.5rem 0;
+    white-space: pre-wrap;
+    line-height: 1.4;
+  }
+
+  .chatbot-bubble-user {
+    margin-left: auto;
+    background: #1f7a8c;
+    color: #ffffff;
+  }
+
+  .chatbot-bubble-ai {
+    margin-right: auto;
+    background: #f1f5f9;
+    color: #1f2937;
+    border: 1px solid #dbe3ea;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
 <main class="content-page chatbot-page">
-  <div class="chatbot-window"></div>
-  <input type="text" class="chatbot-input" placeholder="Ask me a question!" aria-label="Ask me a question!" />
+  <div class="chatbot-window" id="chatbotWindow" aria-live="polite"></div>
+  <form id="chatbotForm" class="chatbot-form" autocomplete="off">
+    {% csrf_token %}
+    <input
+      type="text"
+      class="chatbot-input"
+      id="chatbotInput"
+      placeholder="Ask me a question!"
+      aria-label="Ask me a question!"
+      required
+    />
+    <button type="submit" class="chatbot-send-btn">Send</button>
+  </form>
 </main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function () {
+    const form = document.getElementById('chatbotForm');
+    const input = document.getElementById('chatbotInput');
+    const windowEl = document.getElementById('chatbotWindow');
+    const csrfTokenInput = form.querySelector('input[name="csrfmiddlewaretoken"]');
+    const csrfToken = csrfTokenInput ? csrfTokenInput.value : '';
+
+    function appendMessage(role, text) {
+      const bubble = document.createElement('div');
+      bubble.className = role === 'user' ? 'chatbot-bubble chatbot-bubble-user' : 'chatbot-bubble chatbot-bubble-ai';
+      bubble.textContent = text;
+      windowEl.appendChild(bubble);
+      windowEl.scrollTop = windowEl.scrollHeight;
+    }
+
+    appendMessage('ai', 'Hi! I can help with homelessness resources and ways to get involved. What would you like to know?');
+
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault();
+      const message = input.value.trim();
+      if (!message) return;
+
+      appendMessage('user', message);
+      input.value = '';
+      input.disabled = true;
+
+      try {
+        const response = await fetch('/chatbot/api/message/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+          },
+          body: JSON.stringify({ message })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || 'Something went wrong while contacting the chatbot.');
+        }
+
+        appendMessage('ai', data.reply);
+      } catch (error) {
+        appendMessage('ai', 'Sorry, I could not process that right now. ' + error.message);
+      } finally {
+        input.disabled = false;
+        input.focus();
+      }
+    });
+  })();
+</script>
 {% endblock %}
