@@ -1,32 +1,7 @@
-<aside class="get-involved-sidebar" id="sidebar">
-  <button class="sidebar-collapse" id="sidebarToggle" type="button">
-    &lt;&lt;
-  </button>
-
-  <div class="sidebar-content">
-    <a href="{% url 'core:get_involved' %}" class="sidebar-button">Main</a>
-    <a href="{% url 'core:get_involved_learn' %}" class="sidebar-button">Learn</a>
-    <a href="{% url 'core:get_involved_quiz' %}" class="sidebar-button">Quiz</a>
-
-    <p class="sidebar-help-text">
-      Not sure where to start? Take the quiz to find involvement opportunities that fit you.
-    </p>
-  </div>
+<aside class="sidebar">
+  <nav class="sidebar-nav">
+    <a href="{% url 'core:get_involved' %}" class="sidebar-item{% if active_tab == 'main' %} active{% endif %}">Main</a>
+    <a href="{% url 'core:get_involved_learn' %}" class="sidebar-item{% if active_tab == 'learn' %} active{% endif %}">Learn</a>
+    <a href="{% url 'core:get_involved_quiz' %}" class="sidebar-item{% if active_tab == 'quiz' %} active{% endif %}">Quiz<span class="sidebar-item-description">Find what involvement suits you!</span></a>
+  </nav>
 </aside>
-
-<script>
-  // This script handles the collapsing behavior defined in your style.css (.collapsed)
-  const sidebar = document.getElementById("sidebar");
-  const sidebarToggle = document.getElementById("sidebarToggle");
-
-  if (sidebarToggle && sidebar) {
-    sidebarToggle.addEventListener("click", function () {
-      sidebar.classList.toggle("collapsed");
-      if (sidebar.classList.contains("collapsed")) {
-        sidebarToggle.innerHTML = "&gt;&gt;";
-      } else {
-        sidebarToggle.innerHTML = "&lt;&lt;";
-      }
-    });
-  }
-</script>

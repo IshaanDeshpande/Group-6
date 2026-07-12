@@ -3,32 +3,64 @@
 {% block title %}ResourceConnect - Find Resources{% endblock %}
 
 {% block content %}
-<div class="get-involved-layout">
-  
+<div class="sidebar-page">
   {% include 'partials/sidebar_find_resources.html' %}
 
-  <main class="get-involved-main">
-    <h1>Find Resources</h1>
-    <p>Locate helpful resources near you</p>
+  <main class="sidebar-page-content">
+    <h1 class="sidebar-page-title">Find Resources</h1>
+    <p class="sidebar-page-subtitle">Locate helpful resources near you</p>
 
-    <div class="get-involved-search">
+    <form class="search-section" method="get" action="{% url 'resources:find_resources' %}">
       <input
         type="text"
-        placeholder="Search by service, city, or ZIP code"
+        class="search-input"
+        name="q"
+        value="{{ query }}"
+        placeholder="Search by service or ZIP code"
         aria-label="Search resources"
       />
-      <button type="button" aria-label="Search resources">
+      <button type="submit" class="search-button" aria-label="Search resources">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2"/>
           <path d="M12 12L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
       </button>
-    </div>
+    </form>
 
-    <div>
-      <h2>RESULTS</h2>
-      <div class="get-involved-results" style="padding: 1rem; display: flex; align-items: center; justify-content: center;">
-        <p class="empty-state" style="margin: 0; color: #666;">Resource search results will appear here as the database is connected.</p>
+    <div class="results-section">
+      <h2 class="results-heading">RESULTS</h2>
+      <div class="results-container">
+        {% if search_error %}
+          <p class="empty-state">{{ search_error }}</p>
+        {% elif query %}
+          {% if results %}
+            <p class="empty-state" style="margin-bottom: 1rem;">Showing {{ total_results }} results from 2-1-1 Colorado.</p>
+            {% for resource in results %}
+              <article class="resource-card" style="padding: 1rem 0; border-bottom: 1px solid #e5e7eb;">
+                <h3 style="margin-bottom: 0.25rem;">{{ resource.name }}</h3>
+                {% if resource.agency_name and resource.agency_name != resource.name %}
+                  <p style="margin: 0 0 0.25rem; font-weight: 600;">{{ resource.agency_name }}</p>
+                {% endif %}
+                {% if resource.description %}
+                  <p style="margin: 0 0 0.25rem;">{{ resource.description }}</p>
+                {% endif %}
+                {% if resource.address %}
+                  <p style="margin: 0 0 0.25rem; color: #4b5563;">{{ resource.address }}</p>
+                {% endif %}
+                {% if resource.phone %}
+                  <p style="margin: 0 0 0.25rem; color: #4b5563;">{{ resource.phone }}</p>
+                {% endif %}
+                {% if resource.website %}
+                  <a href="{{ resource.website }}" target="_blank" rel="noopener">Visit website</a>
+                {% endif %}
+              </article>
+            {% endfor %}
+          {% else %}
+            <p class="empty-state">No resources matched your search in 2-1-1 Colorado.</p>
+          {% endif %}
+        {% else %}
+          <p class="empty-state">Resource search results will appear here.</p>
+        {% endif %}
       </div>
     </div>
   </main>
