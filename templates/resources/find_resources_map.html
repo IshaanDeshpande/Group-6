@@ -1,31 +1,220 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}ResourceConnect - Find Resources Map{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'vendor/leaflet/leaflet.css' %}" />
+{% endblock %}
 
 {% block content %}
 <div class="sidebar-page">
   {% include 'partials/sidebar_find_resources.html' %}
 
-  <main class="sidebar-page-content" x-data="{ category: null }">
+  <main
+    class="sidebar-page-content"
+    x-data="resourceMapPage({
+      apiEndpoint: '{% url "resources:map_markers_api" %}',
+      defaultCenter: { lat: {{ colorado_center.lat }}, lng: {{ colorado_center.lng }} }
+    })"
+    x-init="setup()"
+  >
     <h1 class="sidebar-page-title">Find resources near you</h1>
+    <p class="sidebar-page-subtitle">Select a category to load nearby resources on the map.</p>
 
     <div class="resource-categories">
-      <button type="button" class="resource-category" :class="{ 'resource-category--selected': category === 'food' }" @click="category = 'food'">Food</button>
-      <button type="button" class="resource-category" :class="{ 'resource-category--selected': category === 'shelter' }" @click="category = 'shelter'">Shelter</button>
-      <button type="button" class="resource-category" :class="{ 'resource-category--selected': category === 'clothing' }" @click="category = 'clothing'">Clothing</button>
-      <button type="button" class="resource-category" :class="{ 'resource-category--selected': category === 'transportation' }" @click="category = 'transportation'">Transportation</button>
-      <button type="button" class="resource-category" :class="{ 'resource-category--selected': category === 'healthcare' }" @click="category = 'healthcare'">Healthcare</button>
+      <button type="button" class="resource-category" :class="{ 'resource-category--selected': category === 'food' }" @click="selectCategory('food')">Food</button>
+      <button type="button" class="resource-category" :class="{ 'resource-category--selected': category === 'shelter' }" @click="selectCategory('shelter')">Shelter</button>
+      <button type="button" class="resource-category" :class="{ 'resource-category--selected': category === 'clothing' }" @click="selectCategory('clothing')">Clothing</button>
+      <button type="button" class="resource-category" :class="{ 'resource-category--selected': category === 'transportation' }" @click="selectCategory('transportation')">Transportation</button>
+      <button type="button" class="resource-category" :class="{ 'resource-category--selected': category === 'healthcare' }" @click="selectCategory('healthcare')">Healthcare</button>
     </div>
 
-    <div class="resource-map">
-      <span class="resource-map-marker" style="left: 29%; top: 62%;"></span>
+    <div class="resource-map" style="overflow: hidden;">
+      <div id="resource-map-canvas" style="position: absolute; inset: 0; width: 100%; height: 100%; min-height: 24rem;"></div>
+      <div class="absolute top-4 left-4 rounded-md bg-white/95 px-3 py-2 text-sm font-semibold text-black" x-show="loading" x-cloak>
+        Loading resources...
+      </div>
+      <div class="absolute top-4 left-4 rounded-md bg-white/95 px-3 py-2 text-sm font-semibold text-black" x-show="!loading && statusMessage" x-text="statusMessage" x-cloak></div>
     </div>
+
+    <section class="results-section mt-6">
+      <h2 class="results-heading" x-show="category" x-text="`Results for ${category}`" x-cloak></h2>
+      <div class="results-container">
+        <p class="empty-state" x-show="!category" x-cloak>Select a category to view nearby resources.</p>
+        <p class="empty-state" x-show="category && !loading && resources.length === 0" x-cloak>No resources found for this category in the current area.</p>
+        <p class="empty-state" x-show="category && !loading && resources.length > 0 && !selectedResource" x-cloak>Click a map marker to see that resource's details here.</p>
+        <div x-show="selectedResource" x-cloak>
+          <p class="font-heading font-semibold text-lg" x-text="selectedResource ? selectedResource.name : ''"></p>
+          <p class="text-sm text-gray-700" x-text="selectedResource ? (selectedResource.address || 'Address unavailable') : ''"></p>
+          <p class="text-sm text-gray-700" x-text="selectedResource && selectedResource.distance_miles !== null ? `${selectedResource.distance_miles} miles away` : ''"></p>
+          <p class="text-sm text-gray-700" x-show="selectedResource && selectedResource.phone" x-text="selectedResource ? selectedResource.phone : ''"></p>
+          <a class="why-it-matters-link" x-show="selectedResource && selectedResource.website" :href="selectedResource ? selectedResource.website : '#'" target="_blank" rel="noopener noreferrer">Open details</a>
+        </div>
+      </div>
+    </section>
   </main>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
+  window.resourceMapPage = function resourceMapPage(config) {
+    return {
+      category: null,
+      loading: false,
+      statusMessage: 'Choose a category to load map markers.',
+      resources: [],
+      selectedResource: null,
+      map: null,
+      markers: [],
+      defaultCenter: config.defaultCenter,
+      apiEndpoint: config.apiEndpoint,
+
+      setup() {
+        if (!window.L) {
+          this.statusMessage = 'Leaflet failed to load. Check static file serving for vendor/leaflet assets.';
+          return;
+        }
+
+        this.initMap();
+      },
+
+      initMap() {
+        if (this.map || !window.L) {
+          return;
+        }
+
+        this.map = L.map('resource-map-canvas', {
+          zoomControl: true,
+        }).setView([this.defaultCenter.lat, this.defaultCenter.lng], 8);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors',
+          maxZoom: 19,
+        }).addTo(this.map);
+
+        requestAnimationFrame(() => {
+          this.map.invalidateSize();
+        });
+
+        this.statusMessage = 'Choose a category to load map markers.';
+      },
+
+      getCenterForQuery() {
+        if (!this.map) {
+          return this.defaultCenter;
+        }
+
+        const center = this.map.getCenter();
+        return {
+          lat: center.lat,
+          lng: center.lng,
+        };
+      },
+
+      async selectCategory(category) {
+        this.category = category;
+        await this.loadResources();
+      },
+
+      buildInfoHtml(item) {
+        const lines = [
+          `<strong>${item.name || 'Resource'}</strong>`,
+          item.address || 'Address unavailable',
+          item.phone || '',
+          item.website ? `<a href="${item.website}" target="_blank" rel="noopener noreferrer">Open details</a>` : '',
+        ].filter(Boolean);
+
+        return `<div style="max-width:260px;line-height:1.4">${lines.join('<br>')}</div>`;
+      },
+
+      clearMarkers() {
+        this.markers.forEach((marker) => marker.remove());
+        this.markers = [];
+        this.selectedResource = null;
+      },
+
+      renderMarkers(items) {
+        if (!this.map) {
+          return;
+        }
+
+        this.clearMarkers();
+
+        if (!items.length) {
+          this.map.setView([this.defaultCenter.lat, this.defaultCenter.lng], 8);
+          return;
+        }
+
+        const bounds = [];
+
+        items.forEach((item) => {
+          const marker = L.marker([item.lat, item.lng], {
+            title: item.name,
+          }).addTo(this.map);
+          marker.bindPopup(this.buildInfoHtml(item));
+          marker.on('click', () => {
+            this.selectedResource = item;
+          });
+
+          this.markers.push(marker);
+          bounds.push([item.lat, item.lng]);
+        });
+
+        this.map.fitBounds(bounds, { padding: [24, 24] });
+        requestAnimationFrame(() => {
+          this.map.invalidateSize();
+        });
+      },
+
+      async loadResources() {
+        this.loading = true;
+        this.statusMessage = 'Loading resources...';
+
+        const center = this.getCenterForQuery();
+        const params = new URLSearchParams({
+          category: this.category,
+          lat: center.lat,
+          lng: center.lng,
+          limit: 60,
+        });
+
+        try {
+          const response = await fetch(`${this.apiEndpoint}?${params.toString()}`, {
+            headers: {
+              Accept: 'application/json',
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error('Unable to load map resources.');
+          }
+
+          const payload = await response.json();
+          this.resources = payload.markers || [];
+          this.selectedResource = null;
+
+          if (payload.warnings && payload.warnings.length) {
+            this.statusMessage = `Loaded with warnings: ${payload.warnings.join(', ')}`;
+          } else if (!this.resources.length) {
+            this.statusMessage = 'No resources found for this category in the current area.';
+          } else {
+            this.statusMessage = `Loaded ${this.resources.length} resources.`;
+          }
+
+          this.renderMarkers(this.resources);
+        } catch (error) {
+          this.resources = [];
+          this.clearMarkers();
+          this.statusMessage = error && error.message ? error.message : 'Unable to load resources right now.';
+        } finally {
+          this.loading = false;
+        }
+      },
+    };
+  };
+
   (function () {
     const MIN_FONT_SIZE_PX = 11;
     const SHRINK_STEP_PX = 0.5;
@@ -68,4 +257,5 @@
     });
   })();
 </script>
+<script src="{% static 'vendor/leaflet/leaflet.js' %}"></script>
 {% endblock %}

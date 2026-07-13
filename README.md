@@ -518,6 +518,13 @@ SUPABASE_ANON_KEY=replace-this
 
 ```
 
+Free map stack for the resources map page, could replace with google mapsin the future:
+
+1. The map UI uses Leaflet loaded from a CDN.
+2. Base map tiles come from OpenStreetMap.
+3. Resource markers come from the existing 211 Colorado integration.
+4. No Google API key or billing setup is required.
+
 Recommended `.gitignore` entries:
 
 ```
