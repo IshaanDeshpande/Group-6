@@ -110,3 +110,39 @@ def add_to_favorites(request):
     )
     # Redirect right back to the exact search results page they were looking at
     return redirect(request.META.get('HTTP_REFERER', 'resources:find_resources'))
+
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from django.shortcuts import redirect
+from .models import FavoriteResource  # Double check if your model is named FavoriteResource or similar
+
+@login_required
+@require_POST
+def add_to_favorites(request):
+    name = request.POST.get('name')
+    agency_name = request.POST.get('agency_name', '')
+    description = request.POST.get('description', '')
+    address = request.POST.get('address', '')
+    phone = request.POST.get('phone', '')
+    website = request.POST.get('website', '')
+    
+    # This prevents creating duplicate favorites for the same user
+    FavoriteResource.objects.get_or_create(
+        user=request.user,
+        name=name,
+        defaults={
+            'agency_name': agency_name,
+            'description': description,
+            'address': address,
+            'phone': phone,
+            'website': website,
+        }
+    )
+    return redirect(request.META.get('HTTP_REFERER', 'users:profile'))
+
+@login_required
+@require_POST
+def remove_from_favorites(request):
+    resource_name = request.POST.get('name')
+    FavoriteResource.objects.filter(user=request.user, name=resource_name).delete()
+    return redirect(request.META.get('HTTP_REFERER', 'users:profile'))
