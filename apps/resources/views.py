@@ -1,10 +1,12 @@
 import http.cookiejar
 import json
+import math
 import re
 import urllib.error
 import urllib.parse
 import urllib.request
 
+from django.http import JsonResponse
 from django.shortcuts import render
 from rest_framework import viewsets
 
@@ -14,6 +16,10 @@ SEARCH_PAGE_URL = 'https://search.211colorado.org/search?terms=food&page=1&locat
 ZIP_LOOKUP_URL = 'https://api.zippopotam.us/us/{zip_code}'
 COLORADO_CENTER = {'lat': 39.5500507, 'lng': -105.7820674}
 ZIP_FALLBACK_TERM = 'help'
+DEFAULT_MARKER_LIMIT = 60
+MAX_MARKER_LIMIT = 100
+DEFAULT_SEARCH_PER_PAGE = 75
+PIN_SPREAD_STEP_DEGREES = 0.01
 HOMELESSNESS_KEYWORDS = (
     'homeless',
     'homelessness',
@@ -28,6 +34,24 @@ HOMELESSNESS_KEYWORDS = (
     'housing',
     'rent',
 )
+
+CATEGORY_CONFIG = {
+    'food': {
+        'query': 'food pantry',
+    },
+    'shelter': {
+        'query': 'homeless shelter',
+    },
+    'clothing': {
+        'query': 'clothing assistance',
+    },
+    'transportation': {
+        'query': 'transportation assistance',
+    },
+    'healthcare': {
+        'query': 'free clinic',
+    },
+}
 
 
 def _is_zip_code(query):
@@ -141,7 +165,7 @@ def _search_211_colorado(query):
 
     payload = {
         'page': 1,
-        'per_page': 25,
+        'per_page': DEFAULT_SEARCH_PER_PAGE,
         'location': location,
         'service_area': 'colorado',
         'submitted_through_form': True,
@@ -184,6 +208,159 @@ def _search_211_colorado(query):
     return formatted_results, result.get('total_results', 0)
 
 
+def _normalize_category(raw_category):
+    return (raw_category or '').strip().lower()
+
+
+def _safe_float(raw_value, fallback):
+    try:
+        return float(raw_value)
+    except (TypeError, ValueError):
+        return fallback
+
+
+def _coerce_int(raw_value, default, minimum, maximum):
+    try:
+        parsed = int(raw_value)
+    except (TypeError, ValueError):
+        parsed = default
+
+    return max(minimum, min(maximum, parsed))
+
+
+def _distance_miles(origin, destination):
+    origin_lat = math.radians(origin['lat'])
+    origin_lng = math.radians(origin['lng'])
+    destination_lat = math.radians(destination['lat'])
+    destination_lng = math.radians(destination['lng'])
+
+    delta_lat = destination_lat - origin_lat
+    delta_lng = destination_lng - origin_lng
+
+    a = (
+        math.sin(delta_lat / 2) ** 2
+        + math.cos(origin_lat) * math.cos(destination_lat) * math.sin(delta_lng / 2) ** 2
+    )
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    return round(3958.8 * c, 2)
+
+
+def _coords_from_211_result(result):
+    postal_code = (result.get('postal_code') or '').strip()
+    if not postal_code:
+        return None
+
+    try:
+        return _lookup_zip_coordinates(postal_code)
+    except (urllib.error.URLError, urllib.error.HTTPError, KeyError, IndexError, ValueError, json.JSONDecodeError):
+        return None
+
+
+def _build_211_category_markers(category, origin, limit):
+    category_query = CATEGORY_CONFIG[category]['query']
+    results, total_results = _search_211_colorado(category_query)
+
+    markers = []
+    for index, result in enumerate(results):
+        coords = _coords_from_211_result(result)
+        if not coords:
+            continue
+
+        marker = {
+            'source': '211',
+            'source_id': f'211-{category}-{index}',
+            'name': result.get('name') or 'Resource',
+            'category': category,
+            'address': result.get('address') or '',
+            'lat': coords['lat'],
+            'lng': coords['lng'],
+            'phone': result.get('phone') or '',
+            'website': result.get('website') or '',
+            'description': result.get('description') or '',
+            'distance_miles': _distance_miles(origin, coords),
+        }
+        markers.append(marker)
+
+    markers.sort(key=lambda marker: (marker['distance_miles'], marker['name']))
+    return _spread_overlapping_markers(markers[:limit]), total_results
+
+
+def _spread_overlapping_markers(markers):
+    grouped_markers = {}
+
+    for marker in markers:
+        key = (round(marker['lat'], 5), round(marker['lng'], 5))
+        grouped_markers.setdefault(key, []).append(marker)
+
+    spread_markers = []
+    for group in grouped_markers.values():
+        if len(group) == 1:
+            spread_markers.append(group[0])
+            continue
+
+        for index, marker in enumerate(group):
+            angle = (2 * math.pi * index) / len(group)
+            offset_lat = math.sin(angle) * PIN_SPREAD_STEP_DEGREES
+            offset_lng = math.cos(angle) * PIN_SPREAD_STEP_DEGREES
+
+            spread_marker = dict(marker)
+            spread_marker['lat'] = round(marker['lat'] + offset_lat, 6)
+            spread_marker['lng'] = round(marker['lng'] + offset_lng, 6)
+            spread_marker['original_lat'] = marker['lat']
+            spread_marker['original_lng'] = marker['lng']
+            spread_markers.append(spread_marker)
+
+    spread_markers.sort(key=lambda marker: (marker['distance_miles'], marker['name']))
+    return spread_markers
+
+
+def map_markers_api(request):
+    category = _normalize_category(request.GET.get('category'))
+    if category not in CATEGORY_CONFIG:
+        return JsonResponse(
+            {
+                'error': 'Invalid category value.',
+                'valid_categories': sorted(CATEGORY_CONFIG.keys()),
+            },
+            status=400,
+        )
+
+    origin = {
+        'lat': _safe_float(request.GET.get('lat'), COLORADO_CENTER['lat']),
+        'lng': _safe_float(request.GET.get('lng'), COLORADO_CENTER['lng']),
+    }
+    marker_limit = _coerce_int(
+        request.GET.get('limit'),
+        DEFAULT_MARKER_LIMIT,
+        minimum=1,
+        maximum=MAX_MARKER_LIMIT,
+    )
+
+    warnings = []
+    resource_markers = []
+    total_211_results = 0
+
+    try:
+        resource_markers, total_211_results = _build_211_category_markers(category, origin, marker_limit)
+    except (urllib.error.URLError, urllib.error.HTTPError, KeyError, IndexError, ValueError, json.JSONDecodeError):
+        warnings.append('resource_211_unavailable')
+
+    return JsonResponse(
+        {
+            'category': category,
+            'origin': origin,
+            'limit': marker_limit,
+            'counts': {
+                'from_211': len(resource_markers),
+                'total_211_results': total_211_results,
+                'returned': len(resource_markers),
+            },
+            'warnings': warnings,
+            'markers': resource_markers,
+        }
+    )
+
+
 def find_resources(request):
     raw_query = (request.GET.get('q') or '').strip()
     results = []
@@ -209,7 +386,14 @@ def find_resources(request):
     )
 
 def find_resources_map(request):
-    return render(request, 'resources/find_resources_map.html', {'active_tab': 'map'})
+    return render(
+        request,
+        'resources/find_resources_map.html',
+        {
+            'active_tab': 'map',
+            'colorado_center': COLORADO_CENTER,
+        },
+    )
 
 def find_resources_personalized(request):
     return render(request, 'resources/find_resources_personalized.html', {'active_tab': 'personalized'})
