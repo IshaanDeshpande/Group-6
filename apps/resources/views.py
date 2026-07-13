@@ -14,6 +14,7 @@ SEARCH_PAGE_URL = 'https://search.211colorado.org/search?terms=food&page=1&locat
 ZIP_LOOKUP_URL = 'https://api.zippopotam.us/us/{zip_code}'
 COLORADO_CENTER = {'lat': 39.5500507, 'lng': -105.7820674}
 ZIP_FALLBACK_TERM = 'help'
+OUTSIDE_COLORADO_ERROR = 'Sorry, this zip code is outside of colorado and is not currently in our database.'
 HOMELESSNESS_KEYWORDS = (
     'homeless',
     'homelessness',
@@ -34,6 +35,10 @@ def _is_zip_code(query):
     return bool(re.fullmatch(r'\d{5}', query))
 
 
+class OutsideColoradoZipError(Exception):
+    pass
+
+
 def _lookup_zip_coordinates(zip_code):
     request = urllib.request.Request(
         ZIP_LOOKUP_URL.format(zip_code=urllib.parse.quote(zip_code)),
@@ -43,7 +48,15 @@ def _lookup_zip_coordinates(zip_code):
     with urllib.request.urlopen(request, timeout=30) as response:
         payload = json.loads(response.read().decode('utf-8', 'ignore'))
 
-    place = payload['places'][0]
+    places = payload.get('places') or []
+    if not places:
+        raise KeyError('No ZIP data found')
+
+    state_abbreviation = (places[0].get('state abbreviation') or '').upper()
+    if state_abbreviation != 'CO':
+        raise OutsideColoradoZipError()
+
+    place = places[0]
     return {
         'lat': float(place['latitude']),
         'lng': float(place['longitude']),
@@ -193,12 +206,10 @@ def find_resources(request):
     if raw_query:
         try:
             results, total_results = _search_211_colorado(raw_query)
+        except OutsideColoradoZipError:
+            search_error = OUTSIDE_COLORADO_ERROR
         except (urllib.error.URLError, urllib.error.HTTPError, KeyError, IndexError, ValueError, json.JSONDecodeError):
             search_error = 'Unable to reach the 2-1-1 Colorado database right now.'
-
-    favorited_names = []
-    if request.user.is_authenticated:
-        favorited_names = list(request.user.favorites.values_list('name', flat=True))
 
     return render(
         request,
@@ -209,8 +220,7 @@ def find_resources(request):
             'results': results,
             'total_results': total_results,
             'search_error': search_error,
-            'favorited_names': favorited_names,
-        }
+        },
     )
 
 def find_resources_map(request):

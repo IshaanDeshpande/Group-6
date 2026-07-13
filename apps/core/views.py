@@ -45,48 +45,34 @@ def _tokenize(text):
 
 @lru_cache(maxsize=1)
 def _load_site_documents():
-    templates_root = Path(settings.BASE_DIR) / 'templates'
-    candidate_dirs = [
-        templates_root / 'core',
-        templates_root / 'resources',
-        templates_root / 'users',
-    ]
-
-    docs = []
-    for directory in candidate_dirs:
-        if not directory.exists():
-            continue
-
-        for html_file in directory.glob('*.html'):
-            try:
-                raw_text = html_file.read_text(encoding='utf-8', errors='ignore')
-            except OSError:
-                continue
-
-            cleaned = _strip_template_markup(raw_text)
-            if not cleaned:
-                continue
-
-            docs.append(
-                {
-                    'title': html_file.stem.replace('_', ' ').title(),
-                    'text': cleaned[:2200],
-                    'tokens': _tokenize(cleaned),
-                }
-            )
-
-    docs.append(
+    return [
         {
             'title': 'Volunteer Awards And Benefits',
-            'text': CURATED_VOLUNTEER_FACTS,
+            'text': (
+                'Volunteering can improve physical and mental health, give a sense of purpose, '
+                'strengthen relationships, help build skills, support resumes and college '
+                'applications, and help people socialize. Awards include the American '
+                'Volunteer Service Award and the National Service Honor.'
+            ),
             'tokens': _tokenize(CURATED_VOLUNTEER_FACTS),
-        }
-    )
+        },
+        {
+            'title': 'Get Involved',
+            'text': (
+                'ResourceConnect suggests starting with the quiz or learning page, then '
+                'looking for local volunteer organizations or larger national groups.'
+            ),
+            'tokens': _tokenize('ResourceConnect Get Involved quiz learn volunteer organizations local national groups'),
+        },
+        {
+            'title': 'Find Resources',
+            'text': 'ResourceConnect also helps users find nearby support resources and search hubs.',
+            'tokens': _tokenize('ResourceConnect find resources nearby support resources search hubs'),
+        },
+    ]
 
-    return docs
 
-
-def _build_grounding_context(user_message, max_docs=6):
+def _build_grounding_context(user_message, max_docs=1):
     docs = _load_site_documents()
     query_tokens = _tokenize(user_message)
     scored = []
@@ -100,6 +86,8 @@ def _build_grounding_context(user_message, max_docs=6):
     selected_docs = [doc for score, doc in scored if score > 0][:max_docs]
     if not selected_docs:
         selected_docs = docs[:2]
+
+    selected_docs = selected_docs[:max_docs]
 
     sections = [f"{doc['title']}: {doc['text']}" for doc in selected_docs]
     return '\n\n'.join(sections)
@@ -154,11 +142,9 @@ def chatbot_message(request):
             {
                 'role': 'system',
                 'content': (
-                    'You are a helpful assistant for ResourceConnect. '
-                    'Focus on homelessness support resources and ways users can get involved. '
-                    'Use the supplied context from the ResourceConnect website and volunteer facts '
-                    'to answer. If an answer is not in context, say you are not sure and suggest '
-                    'relevant ResourceConnect pages the user can check.'
+                    'You are a concise assistant for ResourceConnect. '
+                    'Use the provided context. If the answer is not in context, say you are not sure '
+                    'and point to ResourceConnect pages the user can check.'
                 ),
             },
             {
@@ -167,7 +153,7 @@ def chatbot_message(request):
             },
             {'role': 'user', 'content': user_message},
         ],
-        'temperature': 0.4,
+        'temperature': 0.2,
     }
 
     req = urllib.request.Request(

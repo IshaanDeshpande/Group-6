@@ -67,3 +67,17 @@ class ResourceSearchTests(TestCase):
             _rank_homelessness_relevance(homeless_resource, "help"),
             _rank_homelessness_relevance(generic_resource, "help"),
         )
+
+    @patch("apps.resources.views._search_211_colorado")
+    def test_non_colorado_zip_shows_outside_database_error(self, search_211_mock):
+        from apps.resources.views import OutsideColoradoZipError
+
+        search_211_mock.side_effect = OutsideColoradoZipError()
+
+        response = self.client.get(reverse("resources:find_resources"), {"q": "90210"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            "Sorry, this zip code is outside of colorado and is not currently in our database.",
+        )
