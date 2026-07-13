@@ -38,6 +38,33 @@
             {% for resource in results %}
               <article class="resource-card" style="padding: 1rem 0; border-bottom: 1px solid #e5e7eb;">
                 <h3 style="margin-bottom: 0.25rem;">{{ resource.name }}</h3>
+
+                {% if user.is_authenticated %}
+                  {% if resource.name in favorited_names %}
+                    <form method="post" action="{% url 'users:remove_from_favorites' %}" style="display: block; margin: 0.5rem 0;">
+                      {% csrf_token %}
+                      <input type="hidden" name="name" value="{{ resource.name }}">
+                      <button type="submit" style="background-color: #4b5563; color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                        💔 Remove Favorite
+                      </button>
+                    </form>
+                  {% else %}
+                    <form method="post" action="{% url 'users:add_to_favorites' %}" style="display: block; margin: 0.5rem 0;">
+                      {% csrf_token %}
+                      <input type="hidden" name="name" value="{{ resource.name }}">
+                      <input type="hidden" name="agency_name" value="{{ resource.agency_name|default:'' }}">
+                      <input type="hidden" name="description" value="{{ resource.description|default:'' }}">
+                      <input type="hidden" name="address" value="{{ resource.address|default:'' }}">
+                      <input type="hidden" name="phone" value="{{ resource.phone|default:'' }}">
+                      <input type="hidden" name="website" value="{{ resource.website|default:'' }}">
+                      
+                      <button type="submit" style="background-color: #ef4444; color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                        ❤️ Add to Favorites
+                      </button>
+                    </form>
+                  {% endif %}
+                {% endif %}
+
                 {% if resource.agency_name and resource.agency_name != resource.name %}
                   <p style="margin: 0 0 0.25rem; font-weight: 600;">{{ resource.agency_name }}</p>
                 {% endif %}
@@ -51,7 +78,7 @@
                   <p style="margin: 0 0 0.25rem; color: #4b5563;">{{ resource.phone }}</p>
                 {% endif %}
                 {% if resource.website %}
-                  <a href="{{ resource.website }}" target="_blank" rel="noopener">Visit website</a>
+                  <a href="{{ resource.website }}" target="_blank" rel="noopener" style="color: #2563eb; text-decoration: underline;">Visit website</a>
                 {% endif %}
               </article>
             {% endfor %}

@@ -10,4 +10,5 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     # --- Add this line here ---
     path('favorites/add/', views.add_to_favorites, name='add_to_favorites'),
+    path('favorites/remove/', views.remove_from_favorites, name='remove_from_favorites'),
 ]
