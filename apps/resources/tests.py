@@ -68,7 +68,6 @@ class ResourceSearchTests(TestCase):
             _rank_homelessness_relevance(generic_resource, "help"),
         )
 
-<<<<<<< HEAD
     def test_map_markers_api_rejects_unknown_category(self):
         response = self.client.get(reverse("resources:map_markers_api"), {"category": "unknown"})
 
@@ -140,18 +139,3 @@ class ResourceSearchTests(TestCase):
         self.assertEqual(payload["category"], "food")
         self.assertEqual(payload["counts"]["returned"], 1)
         self.assertEqual(len(payload["markers"]), 1)
-=======
-    @patch("apps.resources.views._search_211_colorado")
-    def test_non_colorado_zip_shows_outside_database_error(self, search_211_mock):
-        from apps.resources.views import OutsideColoradoZipError
-
-        search_211_mock.side_effect = OutsideColoradoZipError()
-
-        response = self.client.get(reverse("resources:find_resources"), {"q": "90210"})
-
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(
-            response,
-            "Sorry, this zip code is outside of colorado and is not currently in our database.",
-        )
->>>>>>> 5fe4348004f665276c5c77561ff6bee6e4c11571

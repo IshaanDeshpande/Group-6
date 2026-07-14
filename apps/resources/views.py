@@ -37,19 +37,19 @@ HOMELESSNESS_KEYWORDS = (
 
 CATEGORY_CONFIG = {
     'food': {
-        'query': 'food pantry',
+        'query': 'food',
     },
     'shelter': {
-        'query': 'homeless shelter',
+        'query': 'shelter',
     },
     'clothing': {
-        'query': 'clothing assistance',
+        'query': 'clothing',
     },
     'transportation': {
-        'query': 'transportation assistance',
+        'query': 'transportation',
     },
     'healthcare': {
-        'query': 'free clinic',
+        'query': 'healthcare',
     },
 }
 
