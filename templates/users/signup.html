@@ -17,19 +17,19 @@
     {% endif %}
 
     {{ form.username }}
-    {% if form.username.errors %}<p class="text-red-500 text-xs text-right mb-2">{{ form.username.errors.0 }}</p>{% endif %}
+    {% if form.username.errors %}<p class="text-red-500 text-xs text-left mb-2">{{ form.username.errors.0 }}</p>{% endif %}
 
     {{ form.email }}
-    {% if form.email.errors %}<p class="text-red-500 text-xs text-right mb-2">{{ form.email.errors.0 }}</p>{% endif %}
+    {% if form.email.errors %}<p class="text-red-500 text-xs text-left mb-2">{{ form.email.errors.0 }}</p>{% endif %}
 
     {{ form.zip_code }}
-    {% if form.zip_code.errors %}<p class="text-red-500 text-xs text-right mb-2">{{ form.zip_code.errors.0 }}</p>{% endif %}
+    {% if form.zip_code.errors %}<p class="text-red-500 text-xs text-left mb-2">{{ form.zip_code.errors.0 }}</p>{% endif %}
 
     {{ form.password1 }}
-    {% if form.password1.errors %}<p class="text-red-500 text-xs text-right mb-2">{{ form.password1.errors.0 }}</p>{% endif %}
+    {% if form.password1.errors %}<p class="text-red-500 text-xs text-left mb-2">{{ form.password1.errors.0 }}</p>{% endif %}
 
     {{ form.password2 }}
-    {% if form.password2.errors %}<p class="text-red-500 text-xs text-right mb-4">{{ form.password2.errors.0 }}</p>{% endif %}
+    {% if form.password2.errors %}<p class="text-red-500 text-xs text-left mb-4">{{ form.password2.errors.0 }}</p>{% endif %}
 
     <button type="submit" class="cta-button self-center">Sign Up</button>
   </form>
