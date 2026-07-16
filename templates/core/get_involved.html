@@ -11,26 +11,84 @@
     <h1 class="sidebar-page-title">Get Involved</h1>
     <p class="sidebar-page-subtitle">Search for involvement opportunities</p>
     
-    <div class="search-section">
+    <form class="search-section" method="get" action="{% url 'core:get_involved' %}">
       <input
         type="text"
         class="search-input"
+        name="q"
+        value="{{ search_query }}"
         placeholder="Search for involvement opportunities"
         aria-label="Search for involvement opportunities"
-        value="{{ search_query }}"
       />
-      <button class="search-button" aria-label="Search">
+      <button type="submit" class="search-button" aria-label="Search">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2"/>
           <path d="M12 12L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
       </button>
-    </div>
+    </form>
 
     <div class="results-section">
       <h2 class="results-heading">RESULTS</h2>
       <div class="results-container">
-        <p class="empty-state">Volunteer opportunities and education links will appear here.</p>
+        {% if search_error %}
+          <p class="empty-state">{{ search_error }}</p>
+        {% elif search_query %}
+          {% if results %}
+            <p class="empty-state" style="margin-bottom: 1rem;">Showing {{ total_results }} results from 2-1-1 Colorado.</p>
+            {% for resource in results %}
+              <article class="resource-card" style="padding: 1rem 0; border-bottom: 1px solid #e5e7eb;">
+                <h3 style="margin-bottom: 0.25rem;">{{ resource.name }}</h3>
+
+                {% if user.is_authenticated %}
+                  {% if resource.name in favorited_names %}
+                    <form method="post" action="{% url 'users:remove_from_favorites' %}" style="display: block; margin: 0.5rem 0;">
+                      {% csrf_token %}
+                      <input type="hidden" name="name" value="{{ resource.name }}">
+                      <button type="submit" style="background-color: #4b5563; color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                        💔 Remove Favorite
+                      </button>
+                    </form>
+                  {% else %}
+                    <form method="post" action="{% url 'users:add_to_favorites' %}" style="display: block; margin: 0.5rem 0;">
+                      {% csrf_token %}
+                      <input type="hidden" name="name" value="{{ resource.name }}">
+                      <input type="hidden" name="agency_name" value="{{ resource.agency_name|default:'' }}">
+                      <input type="hidden" name="description" value="{{ resource.description|default:'' }}">
+                      <input type="hidden" name="address" value="{{ resource.address|default:'' }}">
+                      <input type="hidden" name="phone" value="{{ resource.phone|default:'' }}">
+                      <input type="hidden" name="website" value="{{ resource.website|default:'' }}">
+
+                      <button type="submit" style="background-color: #ef4444; color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                        ❤️ Add to Favorites
+                      </button>
+                    </form>
+                  {% endif %}
+                {% endif %}
+
+                {% if resource.agency_name and resource.agency_name != resource.name %}
+                  <p style="margin: 0 0 0.25rem; font-weight: 600;">{{ resource.agency_name }}</p>
+                {% endif %}
+                {% if resource.description %}
+                  <p style="margin: 0 0 0.25rem;">{{ resource.description }}</p>
+                {% endif %}
+                {% if resource.address %}
+                  <p style="margin: 0 0 0.25rem; color: #4b5563;">{{ resource.address }}</p>
+                {% endif %}
+                {% if resource.phone %}
+                  <p style="margin: 0 0 0.25rem; color: #4b5563;">{{ resource.phone }}</p>
+                {% endif %}
+                {% if resource.website %}
+                  <a href="{{ resource.website }}" target="_blank" rel="noopener" style="color: #2563eb; text-decoration: underline;">Visit website</a>
+                {% endif %}
+              </article>
+            {% endfor %}
+          {% else %}
+            <p class="empty-state">No involvement opportunities matched your search in 2-1-1 Colorado.</p>
+          {% endif %}
+        {% else %}
+          <p class="empty-state">Volunteer opportunities and education links will appear here.</p>
+        {% endif %}
       </div>
     </div>
   </main>

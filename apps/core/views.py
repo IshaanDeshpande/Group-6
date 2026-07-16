@@ -11,6 +11,8 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
+from apps.resources.views import _search_211_colorado
+
 CURATED_VOLUNTEER_FACTS = """
 Awards:
 - American Volunteer Service Award: offered to individuals who reach a certain number of service hours in 12 months.
@@ -96,8 +98,33 @@ def home(request):
     return render(request, 'core/home.html')
 
 def get_involved(request):
-    search_query = request.GET.get('q', '')
-    return render(request, 'core/get_involved.html', {'active_tab': 'main', 'search_query': search_query})
+    search_query = (request.GET.get('q') or '').strip()
+    results = []
+    total_results = 0
+    search_error = ''
+
+    if search_query:
+        try:
+            results, total_results = _search_211_colorado(search_query)
+        except (urllib.error.URLError, urllib.error.HTTPError, KeyError, IndexError, ValueError, json.JSONDecodeError):
+            search_error = 'Unable to reach the 2-1-1 Colorado database right now.'
+
+    favorited_names = []
+    if request.user.is_authenticated:
+        favorited_names = list(request.user.favorites.values_list('name', flat=True))
+
+    return render(
+        request,
+        'core/get_involved.html',
+        {
+            'active_tab': 'main',
+            'search_query': search_query,
+            'results': results,
+            'total_results': total_results,
+            'search_error': search_error,
+            'favorited_names': favorited_names,
+        },
+    )
 
 def get_involved_learn(request):
     return render(request, 'core/get_involved_learn.html', {'active_tab': 'learn'})

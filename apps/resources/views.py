@@ -8,6 +8,7 @@ import urllib.request
 
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.utils.html import strip_tags
 from rest_framework import viewsets
 
 
@@ -74,6 +75,16 @@ def _lookup_zip_coordinates(zip_code):
     }
 
 
+def _clean_description(raw_description):
+    if not raw_description:
+        return ''
+
+    text = re.sub(r'<li[^>]*>', '• ', raw_description)
+    text = re.sub(r'</(p|li|div)>|<br\s*/?>', ' ', text)
+    text = strip_tags(text)
+    return re.sub(r'\s+', ' ', text).strip()
+
+
 def _format_result(item):
     address_parts = [
         item.get('address_1') or '',
@@ -109,7 +120,7 @@ def _format_result(item):
     return {
         'name': item.get('name') or item.get('agency_name') or 'Resource',
         'agency_name': item.get('agency_name') or '',
-        'description': item.get('description') or '',
+        'description': _clean_description(item.get('description')),
         'address': address,
         'phone': phone,
         'website': website,
