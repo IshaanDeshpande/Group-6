@@ -5,6 +5,29 @@
 
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'vendor/leaflet/leaflet.css' %}" />
+  <style>
+    .resource-category-loading {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .resource-spinner {
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid rgba(0, 0, 0, 0.18);
+      border-top-color: #000000;
+      border-radius: 50%;
+      animation: resource-spin 0.8s linear infinite;
+    }
+
+    @keyframes resource-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
 {% endblock %}
 
 {% block content %}
@@ -24,11 +47,36 @@
     <p class="sidebar-page-subtitle">Select a category to load nearby resources on the map.</p>
 
     <div class="resource-categories">
-      <button type="button" class="resource-category resource-category--food" :class="{ 'resource-category--selected': category === 'food' }" @click="selectCategory('food')">Food</button>
-      <button type="button" class="resource-category resource-category--shelter" :class="{ 'resource-category--selected': category === 'shelter' }" @click="selectCategory('shelter')">Shelter</button>
-      <button type="button" class="resource-category resource-category--clothing" :class="{ 'resource-category--selected': category === 'clothing' }" @click="selectCategory('clothing')">Clothing</button>
-      <button type="button" class="resource-category resource-category--transportation" :class="{ 'resource-category--selected': category === 'transportation' }" @click="selectCategory('transportation')">Transportation</button>
-      <button type="button" class="resource-category resource-category--healthcare" :class="{ 'resource-category--selected': category === 'healthcare' }" @click="selectCategory('healthcare')">Healthcare</button>
+      <button type="button" class="resource-category resource-category--food" :class="{ 'resource-category--selected': category === 'food' }" @click="selectCategory('food')" :disabled="loading">
+        <span class="resource-category-loading" x-show="loading && loadingCategory === 'food'" x-cloak>
+          <span class="resource-spinner" aria-hidden="true"></span>
+        </span>
+        <span>Food</span>
+      </button>
+      <button type="button" class="resource-category resource-category--shelter" :class="{ 'resource-category--selected': category === 'shelter' }" @click="selectCategory('shelter')" :disabled="loading">
+        <span class="resource-category-loading" x-show="loading && loadingCategory === 'shelter'" x-cloak>
+          <span class="resource-spinner" aria-hidden="true"></span>
+        </span>
+        <span>Shelter</span>
+      </button>
+      <button type="button" class="resource-category resource-category--clothing" :class="{ 'resource-category--selected': category === 'clothing' }" @click="selectCategory('clothing')" :disabled="loading">
+        <span class="resource-category-loading" x-show="loading && loadingCategory === 'clothing'" x-cloak>
+          <span class="resource-spinner" aria-hidden="true"></span>
+        </span>
+        <span>Clothing</span>
+      </button>
+      <button type="button" class="resource-category resource-category--transportation" :class="{ 'resource-category--selected': category === 'transportation' }" @click="selectCategory('transportation')" :disabled="loading">
+        <span class="resource-category-loading" x-show="loading && loadingCategory === 'transportation'" x-cloak>
+          <span class="resource-spinner" aria-hidden="true"></span>
+        </span>
+        <span>Transportation</span>
+      </button>
+      <button type="button" class="resource-category resource-category--healthcare" :class="{ 'resource-category--selected': category === 'healthcare' }" @click="selectCategory('healthcare')" :disabled="loading">
+        <span class="resource-category-loading" x-show="loading && loadingCategory === 'healthcare'" x-cloak>
+          <span class="resource-spinner" aria-hidden="true"></span>
+        </span>
+        <span>Healthcare</span>
+      </button>
     </div>
 
     <div class="resource-map" style="overflow: hidden;">
@@ -93,6 +141,7 @@
     return {
       category: null,
       loading: false,
+      loadingCategory: null,
       statusMessage: 'Choose a category to load map markers.',
       resources: [],
       selectedResource: null,
@@ -234,6 +283,7 @@
 
       async selectCategory(category) {
         this.category = category;
+        this.loadingCategory = category;
         await this.loadResources();
       },
 
@@ -342,6 +392,7 @@
           this.statusMessage = error && error.message ? error.message : 'Unable to load resources right now.';
         } finally {
           this.loading = false;
+          this.loadingCategory = null;
         }
       },
     };
