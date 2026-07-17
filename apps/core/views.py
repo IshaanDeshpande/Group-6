@@ -15,19 +15,17 @@ from apps.resources.views import _search_211_colorado
 
 CURATED_VOLUNTEER_FACTS = """
 Awards:
-- American Volunteer Service Award: offered to individuals who reach a certain number of service hours in 12 months.
-  Learn more: https://volunteerscholars.org/avsa/
-- National Service Honor: tracks and awards cumulative volunteer milestones for individuals.
-  Learn more: https://www.nationalservicehonor.org
+- American Volunteer Service Award: This award is offered to individuals who reach a certain number of service hours in 12 months. Learn more: https://volunteerscholars.org/avsa/
+- National Service Honor: This award tracks and awards cumulative volunteer milestones for individuals. Learn more: https://www.nationalservicehonor.org
 
-Benefits of volunteering:
-- According to Mayo Clinic, volunteering can improve physical and mental health,
-  provide a sense of purpose, and strengthen relationships.
-  Source: https://www.mayoclinichealthsystem.org/hometown-health/speaking-of-health/3-health-benefits-of-volunteering
-- Volunteer hours can support college applications and resumes.
-- Volunteering can help people build new skills for career growth.
-- Volunteering helps people socialize and build connections with those they help
-  and those they volunteer alongside.
+Feel good:
+- According to the Mayo Clinic (https://www.mayoclinichealthsystem.org/hometown-health/speaking-of-health/3-health-benefits-of-volunteering), participating in volunteering was shown to improve physical and mental health, provide a sense of purpose, and strengthen relationships.
+
+Volunteer hours:
+- When you volunteer, you can log your hours. Volunteer hours can be very beneficial, as they can look good on college applications and resumes. Volunteering can also lead to learning new skills that can help in your career.
+
+Socialize/meet people:
+- Volunteering can help to make connections with people that you're helping and people that you're working with.
 """.strip()
 
 
@@ -45,31 +43,89 @@ def _tokenize(text):
     return {tok for tok in re.findall(r'[a-zA-Z]{3,}', text.lower())}
 
 
+def _is_homelessness_related_ai(user_message, api_key, api_url, model):
+    """Use AI to classify if the message is about homelessness/housing support."""
+    classification_prompt = {
+        'model': model,
+        'messages': [
+            {
+                'role': 'system',
+                'content': (
+                    'You are a topic classifier for ResourceConnect, a website about homelessness support and volunteering. '
+                    'Respond with ONLY "YES" or "NO". '
+                    'YES if the question relates to: homelessness, housing, shelters, poverty, social services, '
+                    'volunteering, charitable work, emergency assistance, health services, employment assistance, '
+                    'helping vulnerable populations, getting involved with causes, benefits of volunteering, '
+                    'or finding/providing resources to people in need. '
+                    'YES if it asks about ResourceConnect itself, how to help, or what we do. '
+                    'NO only for completely unrelated topics (sports, cooking, weather, movies, math homework, etc). '
+                    'When in doubt, answer YES - it is better to try to help than to turn someone away.'
+                ),
+            },
+            {'role': 'user', 'content': user_message},
+        ],
+        'temperature': 0.0,
+        'max_tokens': 5,
+    }
+
+    req = urllib.request.Request(
+        api_url,
+        data=json.dumps(classification_prompt).encode('utf-8'),
+        headers={
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {api_key}',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        },
+        method='POST',
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=10) as response:
+            result = json.loads(response.read().decode('utf-8'))
+            classification = (result.get('choices', [{}])[0].get('message', {}).get('content', 'YES')).strip().upper()
+            return 'YES' in classification
+    except Exception:
+        # If classification fails, be permissive and allow the message
+        return True
+
+
 @lru_cache(maxsize=1)
 def _load_site_documents():
     return [
         {
+            'title': 'ResourceConnect Mission',
+            'text': (
+                'ResourceConnect is dedicated to supporting individuals experiencing homelessness by '
+                'connecting them with shelter, housing assistance, food banks, mental health services, '
+                'job training, healthcare, and other critical support resources. We help vulnerable '
+                'communities access emergency services and long-term solutions.'
+            ),
+            'tokens': _tokenize('ResourceConnect homelessness shelter housing assistance resources vulnerable emergency support'),
+        },
+        {
             'title': 'Volunteer Awards And Benefits',
             'text': (
-                'Volunteering can improve physical and mental health, give a sense of purpose, '
-                'strengthen relationships, help build skills, support resumes and college '
-                'applications, and help people socialize. Awards include the American '
-                'Volunteer Service Award and the National Service Honor.'
+                'Volunteering to help people experiencing homelessness can improve physical and mental health, '
+                'give a sense of purpose, strengthen relationships, help build skills, and support resumes. '
+                'Awards include the American Volunteer Service Award and the National Service Honor.'
             ),
             'tokens': _tokenize(CURATED_VOLUNTEER_FACTS),
         },
         {
             'title': 'Get Involved',
             'text': (
-                'ResourceConnect suggests starting with the quiz or learning page, then '
-                'looking for local volunteer organizations or larger national groups.'
+                'ResourceConnect suggests starting with the quiz or learning page to understand homelessness, '
+                'then finding local volunteer opportunities with shelter organizations, food banks, or housing nonprofits.'
             ),
-            'tokens': _tokenize('ResourceConnect Get Involved quiz learn volunteer organizations local national groups'),
+            'tokens': _tokenize('ResourceConnect Get Involved volunteer homelessness shelter housing food bank nonprofit organizations'),
         },
         {
             'title': 'Find Resources',
-            'text': 'ResourceConnect also helps users find nearby support resources and search hubs.',
-            'tokens': _tokenize('ResourceConnect find resources nearby support resources search hubs'),
+            'text': (
+                'ResourceConnect helps users find nearby support resources including shelters, emergency housing, '
+                'food assistance, healthcare, mental health services, job training, and other community support hubs.'
+            ),
+            'tokens': _tokenize('ResourceConnect find resources shelter housing emergency food healthcare mental health job training support'),
         },
     ]
 
@@ -147,6 +203,9 @@ def chatbot_message(request):
     if not user_message:
         return JsonResponse({'error': 'Message is required.'}, status=400)
 
+    # Extract conversation history if provided
+    conversation_history = payload.get('history') or []
+
     api_key = getattr(settings, 'AI_API_KEY', '')
     api_url = getattr(settings, 'AI_API_URL', 'https://api.openai.com/v1/chat/completions')
     model = getattr(settings, 'AI_MODEL', 'gpt-4o-mini')
@@ -163,23 +222,45 @@ def chatbot_message(request):
 
     grounding_context = _build_grounding_context(user_message)
 
+    # Check if message is homelessness-related using AI classification
+    if not _is_homelessness_related_ai(user_message, api_key, api_url, model):
+        return JsonResponse({
+            'error': 'I can only help with questions related to homelessness support and resources. '
+                     'Please ask me a question about housing, shelters, social services, or volunteering to help people in need.'
+        }, status=400)
+
+    # Build messages with conversation history
+    messages = [
+        {
+            'role': 'system',
+            'content': (
+                'You are a helpful assistant for ResourceConnect, a website dedicated to supporting '
+                'individuals experiencing homelessness. You ONLY answer questions related to homelessness, '
+                'housing, shelter, support resources, volunteering, or how to help people in need. '
+                'If a question is not related to these topics, politely decline and redirect the user to '
+                'homelessness-related resources. Use the provided context to give accurate answers. '
+                'Be concise and compassionate.'
+            ),
+        },
+        {
+            'role': 'system',
+            'content': f'Context:\n{grounding_context}',
+        },
+    ]
+    
+    # Add conversation history (previous exchanges)
+    for history_msg in conversation_history:
+        messages.append({
+            'role': history_msg.get('role', 'user'),
+            'content': history_msg.get('content', '')
+        })
+    
+    # Add current user message
+    messages.append({'role': 'user', 'content': user_message})
+
     request_body = {
         'model': model,
-        'messages': [
-            {
-                'role': 'system',
-                'content': (
-                    'You are a concise assistant for ResourceConnect. '
-                    'Use the provided context. If the answer is not in context, say you are not sure '
-                    'and point to ResourceConnect pages the user can check.'
-                ),
-            },
-            {
-                'role': 'system',
-                'content': f'Context:\n{grounding_context}',
-            },
-            {'role': 'user', 'content': user_message},
-        ],
+        'messages': messages,
         'temperature': 0.2,
     }
 
@@ -189,6 +270,7 @@ def chatbot_message(request):
         headers={
             'Content-Type': 'application/json',
             'Authorization': f'Bearer {api_key}',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
         },
         method='POST',
     )
@@ -204,8 +286,8 @@ def chatbot_message(request):
     except urllib.error.URLError as err:
         reason = str(getattr(err, 'reason', err))
         return JsonResponse({'error': f'Unable to reach AI provider. {reason}'}, status=502)
-    except TimeoutError:
-        return JsonResponse({'error': 'Unable to reach AI provider. Request timed out.'}, status=502)
+    except (TimeoutError, Exception) as err:
+        return JsonResponse({'error': f'Unable to reach AI provider. {type(err).__name__}: {str(err)[:100]}'}, status=502)
 
     ai_reply = ''
     choices = response_data.get('choices') or []
