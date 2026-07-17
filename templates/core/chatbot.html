@@ -50,17 +50,6 @@
 
 {% block content %}
 <main class="content-page chatbot-page">
-  <div style="margin-bottom: 1rem;">
-    <a
-      href="{% url 'core:get_involved' %}"
-      style="display: inline-flex; align-items: center; gap: 0.4rem; color: #1f7a8c; font-weight: 600; text-decoration: none;"
-      aria-label="Back to Get Involved"
-    >
-      <span aria-hidden="true">&larr;</span>
-      <span>Back to Get Involved</span>
-    </a>
-  </div>
-
   <div class="chatbot-window" id="chatbotWindow" aria-live="polite"></div>
   <form id="chatbotForm" class="chatbot-form" autocomplete="off">
     {% csrf_token %}
@@ -85,6 +74,10 @@
     const windowEl = document.getElementById('chatbotWindow');
     const csrfTokenInput = form.querySelector('input[name="csrfmiddlewaretoken"]');
     const csrfToken = csrfTokenInput ? csrfTokenInput.value : '';
+    
+    // Store conversation history for context (last 3 exchanges = 6 messages)
+    const conversationHistory = [];
+    const MAX_HISTORY_PAIRS = 3; // Keep last 3 question-answer pairs
 
     function appendMessage(role, text) {
       const bubble = document.createElement('div');
@@ -106,18 +99,35 @@
       input.disabled = true;
 
       try {
+        // Add current message to history
+        conversationHistory.push({ role: 'user', content: message });
+        
+        // Keep only last N exchanges (N pairs = 2N messages)
+        const historyToSend = conversationHistory.slice(-(MAX_HISTORY_PAIRS * 2));
+
         const response = await fetch('/chatbot/api/message/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': csrfToken
           },
-          body: JSON.stringify({ message })
+          body: JSON.stringify({ 
+            message,
+            history: historyToSend
+          })
         });
 
         const data = await response.json();
         if (!response.ok) {
           throw new Error(data.error || 'Something went wrong while contacting the chatbot.');
+        }
+
+        // Add AI response to history
+        conversationHistory.push({ role: 'assistant', content: data.reply });
+        
+        // Keep only last N exchanges
+        if (conversationHistory.length > MAX_HISTORY_PAIRS * 2) {
+          conversationHistory.splice(0, conversationHistory.length - (MAX_HISTORY_PAIRS * 2));
         }
 
         appendMessage('ai', data.reply);
