@@ -360,7 +360,9 @@
   }
 
   .chatbot-input {
-    @apply w-full rounded-2xl bg-button-bg text-white placeholder-white/90 font-subtitle text-lg md:text-2xl lg:text-3xl text-center px-6 py-6 md:py-8 border-none outline-none;
+    @apply w-full rounded-2xl bg-button-bg text-black placeholder-black/90 font-subtitle text-lg md:text-2xl lg:text-3xl text-center px-6 py-6 md:py-8 border-none outline-none;
+    -webkit-text-fill-color: #000;
+    caret-color: #000;
   }
 
   .quiz-page {
@@ -451,6 +453,10 @@
     @apply m-0 text-center text-black font-subtitle text-xl md:text-2xl lg:text-3xl;
   }
 
+  .org-card-title a {
+    @apply text-blue-600 underline;
+  }
+
   .quick-facts-card {
     @apply border-4 md:border-[6px] lg:border-[7.5px] border-nav-bg rounded-2xl lg:rounded-[1.5625rem] p-6 md:p-8 mb-8 md:mb-10 text-center;
   }
@@ -464,7 +470,7 @@
   }
 
   .chatbot-cta {
-    @apply flex items-center justify-center rounded-2xl bg-button-bg text-white font-subtitle text-lg md:text-2xl lg:text-3xl text-center px-6 py-6 md:py-8 no-underline;
+    @apply flex items-center justify-center rounded-2xl bg-button-bg text-black font-subtitle text-lg md:text-2xl lg:text-3xl text-center px-6 py-6 md:py-8 no-underline;
   }
 
   .profile-page {

@@ -43,6 +43,97 @@ def _tokenize(text):
     return {tok for tok in re.findall(r'[a-zA-Z]{3,}', text.lower())}
 
 
+def _estimate_tokens(text):
+    return max(1, len(re.findall(r'\b\w+\b', text or '')))
+
+
+def _message_token_count(message):
+    content = message.get('content', '') if isinstance(message, dict) else ''
+    role = message.get('role', '') if isinstance(message, dict) else ''
+    return _estimate_tokens(str(role)) + _estimate_tokens(str(content)) + 4
+
+
+def _trim_text_to_tokens(text, max_tokens):
+    if max_tokens <= 0:
+        return ''
+
+    tokens = re.findall(r'\b\w+\b|[^\w\s]+', text or '')
+    if len(tokens) <= max_tokens:
+        return text or ''
+
+    trimmed_tokens = tokens[:max_tokens]
+    trimmed_text = ' '.join(trimmed_tokens)
+    return re.sub(r'\s+([.,!?;:])', r'\1', trimmed_text)
+
+
+def _fit_messages_to_token_budget(messages, max_tokens=1000):
+    if not messages:
+        return messages
+
+    system_messages = [message for message in messages if message.get('role') == 'system']
+    non_system_messages = [message for message in messages if message.get('role') != 'system']
+
+    fitted_messages = list(system_messages)
+    fitted_total = sum(_message_token_count(message) for message in fitted_messages)
+
+    if not non_system_messages:
+        return fitted_messages
+
+    user_message = non_system_messages[-1]
+    history_messages = non_system_messages[:-1]
+
+    user_tokens = _message_token_count(user_message)
+    if user_tokens >= max_tokens:
+        user_message = {
+            **user_message,
+            'content': _trim_text_to_tokens(user_message.get('content', ''), max_tokens // 2),
+        }
+        user_tokens = _message_token_count(user_message)
+
+    available_for_history = max_tokens - fitted_total - user_tokens
+    if available_for_history < 0:
+        available_for_history = 0
+
+    trimmed_history = []
+    history_budget_used = 0
+    for message in reversed(history_messages):
+        message_tokens = _message_token_count(message)
+        if history_budget_used + message_tokens > available_for_history:
+            break
+        trimmed_history.append(message)
+        history_budget_used += message_tokens
+
+    trimmed_history.reverse()
+    fitted_messages.extend(trimmed_history)
+    fitted_messages.append(user_message)
+
+    total_tokens = sum(_message_token_count(message) for message in fitted_messages)
+    if total_tokens <= max_tokens:
+        return fitted_messages
+
+    context_index = next(
+        (
+            index
+            for index, message in enumerate(fitted_messages)
+            if message.get('role') == 'system' and message.get('content', '').startswith('Context:\n')
+        ),
+        None,
+    )
+    if context_index is not None:
+        context_message = fitted_messages[context_index]
+        overhead_tokens = total_tokens - _message_token_count(context_message)
+        remaining_for_context = max_tokens - overhead_tokens
+        if remaining_for_context > 0:
+            context_body = context_message.get('content', '')[len('Context:\n'):]
+            trimmed_context = _trim_text_to_tokens(context_body, remaining_for_context)
+            fitted_messages[context_index] = {
+                **context_message,
+                'content': f'Context:\n{trimmed_context}',
+            }
+
+    return fitted_messages
+
+
 def _is_homelessness_related_ai(user_message, api_key, api_url, model):
     """Use AI to classify if the message is about homelessness/housing support."""
     classification_prompt = {
@@ -221,6 +312,7 @@ def chatbot_message(request):
         )
 
     grounding_context = _build_grounding_context(user_message)
+    grounding_context = _trim_text_to_tokens(grounding_context, 220)
 
     # Check if message is homelessness-related using AI classification
     if not _is_homelessness_related_ai(user_message, api_key, api_url, model):
@@ -260,7 +352,7 @@ def chatbot_message(request):
 
     request_body = {
         'model': model,
-        'messages': messages,
+        'messages': _fit_messages_to_token_budget(messages, max_tokens=1000),
         'temperature': 0.2,
     }
 
