@@ -2,6 +2,8 @@
 
 Open repo in vs code and run this in the terminal:
 
+Use Python 3.11 or 3.12 for the smoothest setup. If you use Python 3.14 on Windows, install from the current `requirements.txt` so pip picks a newer Pillow wheel.
+
 cd C:\Users\popej\Group-6
 
 .venv\Scripts\Activate.ps1

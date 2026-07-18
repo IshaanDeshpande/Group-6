@@ -108,10 +108,15 @@ CORS_ALLOWED_ORIGINS = env(
     default='http://localhost:3000,http://localhost:8000'
 ).split(',')
 
-AI_API_KEY = env('AI_API_KEY', default='')
-AI_API_URL = env('AI_API_URL', default='https://api.openai.com/v1/chat/completions')
-AI_MODEL = env('AI_MODEL', default='gpt-4o-mini')
-AI_TIMEOUT_SECONDS = env.int('AI_TIMEOUT_SECONDS', default=180)
+CSRF_TRUSTED_ORIGINS = [
+    origin for origin in env('CSRF_TRUSTED_ORIGINS', default='').split(',') if origin
+]
+
+# Respect HTTPS headers set by Vercel's edge proxy in production.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
 
 AI_API_KEY = env('AI_API_KEY', default='')
 AI_API_URL = env('AI_API_URL', default='https://api.openai.com/v1/chat/completions')
