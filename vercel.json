@@ -1,12 +1,6 @@
 {
   "version": 2,
   "buildCommand": "npm install && npm run build:css && python manage.py collectstatic --noinput",
-  "builds": [
-    {
-      "src": "api/index.py",
-      "use": "@vercel/python"
-    }
-  ],
   "routes": [
     {
       "src": "/(.*)",
