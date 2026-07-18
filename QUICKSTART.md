@@ -1,7 +1,7 @@
 # Quick Start Guide - ResourceConnect
 
 ## Prerequisites
-- Python 3.11+
+- Python 3.11 or 3.12 recommended; Python 3.14 also works with the current requirements
 - Node.js LTS
 - PostgreSQL (or update `.env` to use SQLite for local dev)
 

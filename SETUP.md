@@ -94,9 +94,11 @@ Recommended version:
 
 ```
 
-Python 3.11+
+Python 3.11 or 3.12 recommended
 
 ```
+
+If you choose Python 3.14 on Windows, make sure you install from the current `requirements.txt`. Older Pillow pins fail there because they do not provide usable prebuilt wheels.
 
 ---
 
