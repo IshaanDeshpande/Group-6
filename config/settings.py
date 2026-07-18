@@ -9,7 +9,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-dev-key-change-in-production')
 DEBUG = env('DEBUG', default=True)
-ALLOWED_HOSTS = env('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = env('ALLOWED_HOSTS', default='localhost,127.0.0.1,.vercel.app').split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
