@@ -1,10 +1,48 @@
 {
   "version": 2,
   "buildCommand": "npm install && npm run build:css && python manage.py collectstatic --noinput",
+  "builds": [
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python"
+    }
+  ],
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "api/index.py"
+      "src": "^/$",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "^/get-involved/?$",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "^/why-it-matters/?$",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "^/about/?$",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "^/chatbot/?$",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "^/resources(?:/.*)?$",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "^/users(?:/.*)?$",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "^/admin(?:/.*)?$",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "^/(.*)$",
+      "dest": "/api/index.py"
     }
   ]
 }

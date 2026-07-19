@@ -7,6 +7,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(DEBUG=(bool, True))
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
+
+def _env_first(*names, default=''):
+    """Return the first non-empty env var among names, else default."""
+    for name in names:
+        value = env(name, default='')
+        if value not in (None, ''):
+            return value
+    return default
+
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-dev-key-change-in-production')
 DEBUG = env('DEBUG', default=False)
 
@@ -76,12 +85,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': env('DB_ENGINE', default='django.db.backends.sqlite3'),
-        'NAME': env('DB_NAME', default=str(BASE_DIR / 'db.sqlite3')),
-        'USER': env('DB_USER', default=''),
-        'PASSWORD': env('DB_PASSWORD', default=''),
-        'HOST': env('DB_HOST', default=''),
-        'PORT': env('DB_PORT', default=''),
+        'ENGINE': _env_first('DB_ENGINE', 'DATABASE_ENGINE', default='django.db.backends.sqlite3'),
+        'NAME': _env_first('DB_NAME', 'DATABASE_NAME', default=str(BASE_DIR / 'db.sqlite3')),
+        'USER': _env_first('DB_USER', 'DATABASE_USER', default=''),
+        'PASSWORD': _env_first('DB_PASSWORD', 'DATABASE_PASSWORD', default=''),
+        'HOST': _env_first('DB_HOST', 'DATABASE_HOST', default=''),
+        'PORT': _env_first('DB_PORT', 'DATABASE_PORT', default=''),
     }
 }
 
