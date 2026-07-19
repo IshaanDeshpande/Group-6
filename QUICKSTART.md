@@ -1,5 +1,7 @@
 # Quick Start Guide - ResourceConnect
 
+Important: This is a Django app. Use Django's dev server for local testing. Do not use VS Code Live Server for app routes, because it serves static files only.
+
 ## Prerequisites
 - Python 3.11 or 3.12 recommended; Python 3.14 also works with the current requirements
 - Node.js LTS
@@ -97,3 +99,6 @@ Group-6/
 - Set up map integration for resource finder
 - Add user authentication
 - Connect to Supabase for production database
+
+## Deployment
+- Vercel deployment instructions are in [VERCEL_DEPLOYMENT.md](VERCEL_DEPLOYMENT.md)
