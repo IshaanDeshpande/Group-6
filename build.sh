@@ -1,10 +1,9 @@
 #!/bin/bash
 
-# 1. Install Node dependencies and build Tailwind CSS + Next.js
-echo "Building Frontend (Tailwind & Next.js)..."
+# 1. Install Node dependencies and build Tailwind CSS
+echo "Building Tailwind CSS..."
 npm install
 npm run build:css
-npm run build         # <--- THIS IS THE CRITICAL MISSING PIECE!
 
 # 2. Create and activate a Python virtual environment
 echo "Setting up Python virtual environment..."
