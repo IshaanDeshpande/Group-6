@@ -1,12 +1,18 @@
 {
   "version": 2,
-  "framework": null,
   "buildCommand": "bash build.sh",
-  "outputDirectory": ".",
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/static/(.*)",
+      "dest": "/staticfiles/$1"
+    },
+    {
+      "src": "/api/(.*)",
       "dest": "api/index.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/.next/$1"
     }
   ]
 }
