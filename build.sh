@@ -5,10 +5,16 @@ echo "Building Tailwind CSS..."
 npm install
 npm run build:css
 
-# 2. Install Python dependencies (This fixes the ImportError!)
-echo "Installing Python requirements..."
-python3 -m pip install -r requirements.txt
+# 2. Create and activate a Python virtual environment
+echo "Setting up Python virtual environment..."
+python3 -m venv venv
+source venv/bin/activate
 
-# 3. Run Django collectstatic
+# 3. Install Python dependencies inside the venv
+echo "Installing Python requirements..."
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# 4. Run Django collectstatic
 echo "Collecting static files..."
 python3 manage.py collectstatic --noinput
